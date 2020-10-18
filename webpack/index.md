@@ -16,6 +16,6 @@ webpack配置文件：
     npx webpack --config webpackconfig.js //webpack  已那个文件打包
     
 webpack配置环节：
-    Loader是什么
+    Loader是什么: 用于对模块的源代码进行转换
     安装： file-loader
     npm i file-loader -D

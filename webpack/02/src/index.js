@@ -1,3 +1,6 @@
 import Header from "./common/header";
-var img = require('../../../images/1.jpg')
+const img = require('./images/download.jpg')
 new Header()
+async function test(){
+ let a = await 1;
+}

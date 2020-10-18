@@ -13,9 +13,15 @@ module.exports={
     module:{
         rules:[
             {
-                test:'/\.jpg/',
+                test: /\.jpg$/,
                 use:{
                     loader:'file-loader'
+                }
+            },
+            {
+                test: '/\.css$/',
+                use: {
+                    loader:''
                 }
             }
         ]
