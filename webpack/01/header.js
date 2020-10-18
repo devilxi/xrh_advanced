@@ -3,3 +3,5 @@ function Header(){
     header.innerText='Hello Word';
     root.append(header);
 }
+// export default Header;
+module.exports = Header;
