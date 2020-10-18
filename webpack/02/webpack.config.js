@@ -1,7 +1,7 @@
 //commonJS 的语法
 const path = require('path')
 module.exports={
-    // mode:'prouction', //打包模式
+    // mode:'development', //打包模式/
     //入口
     entry:'./src/index.js',
     //打包位置
@@ -12,18 +12,26 @@ module.exports={
     //webpack 默认只能打包js,其余的打包方式在module里面处理
     module:{
         rules:[
+            //打包图片
             {
-                test: /\.jpg$/,
+                test: /\.(jpg|png|gif)$/,
                 use:{
-                    loader:'file-loader'
+                    loader:'file-loader',
+                    options:{
+                        //打包的图片名
+                        name:'[name]_[hash].[ext]',
+                        //存储图片的文件夹
+                        outputPath:'images/'
+                    }
                 }
             },
-            {
-                test: '/\.css$/',
-                use: {
-                    loader:''
-                }
-            }
+            //打包sass
+            // {
+            //     test: /\.scss$/,
+            //     use: {
+            //         loader:'scss-loader'
+            //     }
+            // }
         ]
     }
 }
