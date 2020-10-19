@@ -1,6 +1,7 @@
 import Header from "./common/header";
 import imgSrc from './images/download.jpg'
-// const css = require('./css/1.scss')
+import './css/index.css'
+import './css/1.scss'
 new Header()
 
 let root = document.getElementById('root');

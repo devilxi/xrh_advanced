@@ -12,7 +12,7 @@ module.exports={
     //webpack 默认只能打包js,其余的打包方式在module里面处理
     module:{
         rules:[
-            //打包图片
+            //打包图片文件
             {
                 test: /\.(jpg|png|gif)$/,
                 use:{
@@ -25,13 +25,16 @@ module.exports={
                     }
                 }
             },
+            //打包css文件
+            {
+                test:/\.css$/,
+                use: ['style-loader','css-loader']
+            },
             //打包sass
-            // {
-            //     test: /\.scss$/,
-            //     use: {
-            //         loader:'scss-loader'
-            //     }
-            // }
+            {
+                test:/\.scss$/,
+                use: ['style-loader','css-loader','sass-loader','postcss-loader'] //从下到上从右到左的执行顺序
+            }
         ]
     }
 }

@@ -17,5 +17,14 @@ webpack配置文件：
     
 webpack配置环节：
     Loader是什么: 用于对模块的源代码进行转换
-    安装： file-loader
-    npm i file-loader -D
+    安装： 
+        图片文件安装  file-loader
+        npm i file-loader -D
+        css样式安装
+        npm i style-loader css-loader -D
+        npm i sass-loader node-sass --save-dev
+        //postcss-loader 添加前缀
+        npm i -D postcss-loader
+        npm i autoprefixer -D
+
+
