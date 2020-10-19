@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>动画属性</title>
+    <meta charset="UTF-8">
+    <style>
+        div
+        {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width:100px;
+            height:100px;
+            background:red;
+            animation:myfirst 5s;
+            -moz-animation:myfirst 5s; /* Firefox */
+            -webkit-animation:myfirst 5s; /* Safari and Chrome */
+            -o-animation:myfirst 5s; /* Opera */
+        }
+        span{
+            animation:myfirst 5s;
+            color: yellow;
+        }
+        @keyframes myfirst
+        {
+            from {background:green; color: green}
+            to {background:red; color: orangered}
+        }
+
+        @-moz-keyframes myfirst /* Firefox */
+        {
+            from {background:green;}
+            to {background:red;}
+        }
+
+        @-webkit-keyframes myfirst /* Safari and Chrome */
+        {
+            from {background:green;}
+            to {background:red;}
+        }
+
+        @-o-keyframes myfirst /* Opera */
+        {
+            from {background:green;}
+            to {background:red;}
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <span>倩倩我爱你</span>
+</div>
+
+</body>
+</html>
