@@ -1,14 +1,20 @@
 //commonJS 的语法
-const path = require('path')
+const path = require('path');
+//打包完成生成一个html文件
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 module.exports={
     // mode:'development', //打包模式/
     //入口
     entry:'./src/index.js',
     //打包位置
     output:{
-        filename:'bundle.js',
+        filename:'bundle2.js',
         path:path.resolve(__dirname,'dist') //必须用绝对路径
     },
+    plugins:[new HtmlWebpackPlugin({
+        template:'src/index.html'
+    }), new CleanWebpackPlugin()],
     //webpack 默认只能打包js,其余的打包方式在module里面处理
     module:{
         rules:[
@@ -26,10 +32,10 @@ module.exports={
                 }
             },
             //打包css文件
-            {
-                test:/\.css$/,
-                use: ['style-loader','css-loader']
-            },
+            // {
+            //     test:/\.css$/,
+            //     use: ['style-loader','css-loader']
+            // },
             //打包sass
             {
                 test:/\.scss$/,

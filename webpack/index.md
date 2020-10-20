@@ -26,5 +26,11 @@ webpack配置环节：
         //postcss-loader 添加前缀
         npm i -D postcss-loader
         npm i autoprefixer -D
+        //安装  html-webpack-plugin
+        
+        plugins：在某个时刻帮你做相应的事情
+        webpack插件 
+        npm i --save-dev html-webpack-plugin //打包完成时生成html文件
+        npm install --save-dev clean-webpack-plugin //清楚之前的打包文件
 
 
