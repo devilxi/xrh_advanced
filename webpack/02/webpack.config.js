@@ -9,7 +9,7 @@ module.exports={
     entry:'./src/index.js',
     //打包位置
     output:{
-        filename:'bundle2.js',
+        filename:'bundle.js',
         path:path.resolve(__dirname,'dist') //必须用绝对路径
     },
     plugins:[new HtmlWebpackPlugin({
@@ -32,10 +32,10 @@ module.exports={
                 }
             },
             //打包css文件
-            // {
-            //     test:/\.css$/,
-            //     use: ['style-loader','css-loader']
-            // },
+            {
+                test:/\.css$/,
+                use: ['style-loader','css-loader']
+            },
             //打包sass
             {
                 test:/\.scss$/,
