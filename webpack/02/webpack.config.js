@@ -4,18 +4,26 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 module.exports={
-    // mode:'development', //打包模式/
-    //入口
-    entry:'./src/index.js',
-    //打包位置
+    mode:'development', //打包模式/
+    devtool:'cheap-module-eval-source-map', //映射到具体什么位置报错 映射关系
+    //production - cheap-module-source-map
+    //入口配置
+    entry:{
+        main:'./src/index.js', //对应生成的文件main.js
+        // sub:'./src/index.js'
+    },
+    //打包配置
     output:{
-        filename:'bundle.js',
+        // publicPath:'http://cdn.com.cn', //添加js的前缀地址
+        // filename:'main.js',
+        filename:'[name].js', //生成多个文件
         path:path.resolve(__dirname,'dist') //必须用绝对路径
     },
+    //第三方的配置项
     plugins:[new HtmlWebpackPlugin({
         template:'src/index.html'
     }), new CleanWebpackPlugin()],
-    //webpack 默认只能打包js,其余的打包方式在module里面处理
+    //打包规则： webpack 默认只能打包js,其余的打包方式在module里面处理
     module:{
         rules:[
             //打包图片文件

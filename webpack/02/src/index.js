@@ -9,3 +9,4 @@ let imgDom = document.createElement('img');
 imgDom.src=imgSrc;
 console.log(imgDom);
 root.append(imgDom)
+consol.log('2');
