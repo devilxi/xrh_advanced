@@ -29,7 +29,7 @@ module.exports={
             //打包图片文件
             {
                 test: /\.(jpg|png|gif)$/,
-                use:{
+                use:[{
                     loader:'file-loader',
                     options:{
                         //打包的图片名
@@ -37,7 +37,9 @@ module.exports={
                         //存储图片的文件夹
                         outputPath:'images/'
                     }
-                }
+                },{
+                    loader: 'url-loader'
+                }]
             },
             //打包css文件
             {
