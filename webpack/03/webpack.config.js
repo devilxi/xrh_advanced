@@ -4,12 +4,12 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 module.exports={
-    mode:'development', //打包模式/
+    mode:'production', //打包模式/
     // devtool:'cheap-module-eval-source-map', //映射到具体什么位置报错 映射关系
     //production - cheap-module-source-map
     //入口配置
     entry:{
-        main:'./src/index.js', //对应生成的文件main.js
+        main:'./src/main.js', //对应生成的文件main.js
         // sub:'./src/index.js'
     },
     //打包配置
@@ -21,7 +21,7 @@ module.exports={
     },
     //第三方的配置项
     plugins:[new HtmlWebpackPlugin({
-        template:'src/index.html'
+        template:'./src/index.html'
     }), new CleanWebpackPlugin()],
     //打包规则： webpack 默认只能打包js,其余的打包方式在module里面处理
     module:{
