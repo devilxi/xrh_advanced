@@ -1,3 +1,4 @@
 import  "./css/base.css";
-import "./css/index.css";
-import "./js/jquery.min"
+import "./css/index.scss";
+// import "./js/jquery.min";
+import "./js/index"

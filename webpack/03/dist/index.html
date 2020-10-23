@@ -1,0 +1,158 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>BangBet | Highest odds betting site</title></head><body><div class="container"><div class="header"><span class="header-back">Back</span></div><div class="content"><div class="content-advertising-space"></div><div class="content-switch-country"><img src="./img/login-country1.png"> <span class="country-txt">Uganda</span> <span class="change">Change></span></div><div class="content-logo"><img src="./img/login-country1.png"></div><div class="cont_desc"><p class="cont_desc_tit">Join with your mobile number</p></div><div class="cont_form"><div class="phone_cont" id="phoneCont"><span for="phoneInput" class="form_label" id="phoneLabel">+254</span> <input type="tel" class="phone_input" placeholder="Mobile Number" id="phoneInput" maxlength="10"></div><div class="form_btn" id="formSubmit">Next</div></div></div><div class="dialog" id="dialog"><div class="dialog-cont"><div class="cont-tit">Thank you for your support</div><div class="cont-close" id="dialogClose">X</div><div class="cont-des">After that Bangbet is online, we will notify you by SMS.</div><div class="cont-btn" id="dialogConfirm">OK</div></div></div></div><script>(function (doc, win) {
+    var docEle = doc.documentElement,
+      dpr = Math.min(win.devicePixelRatio, 3), //视网膜宽度
+      scale = 1 / dpr,
+      resizeEvent = 'orientationchange' in window ? 'orientationchange' : 'resize';
+    var metaEle = doc.createElement('meta');
+    metaEle.name = 'viewport';
+    // metaEle.content = 'initial-scale=' + scale + ',maximum-scale=' + scale;
+    metaEle.content = 'initial-scale=' + "1" + ',maximum-scale=' + "2,user-scalable=0";
+    docEle.firstElementChild.appendChild(metaEle);
+
+    var recalCulate = function () {
+      var width = docEle.clientWidth;
+      docEle.style.fontSize = 100 * (width / 750) + 'px';
+    };
+    if (!/iphone|nokia|sony|ericsson|mot|samsung|sgh|lg|philips|panasonic|alcatel|lenovo|cldc|midp|wap|android|iPod/i.test(navigator.userAgent.toLowerCase())) {
+      doc.body.style.width = '750px';
+      doc.body.style.margin = '0 auto';
+      doc.body.style.display = "flex";
+      docEle.style.fontSize = 100 + 'px';
+      return
+    }
+    if (!doc.addEventListener) return;
+    recalCulate();
+    win.addEventListener(resizeEvent, recalCulate, false); //PC端
+  })(document, window);</script><script>$(function () {
+    userStatistics.init();
+  });
+
+  var userStatistics = {
+    data: {
+      isShowPhone: true,
+      country: 'ke',
+      countryList: ['ke', 'ug', 'ng', 'gh'],
+      regionNumberList: {
+        ke: '254',
+        ug: '256',
+        ng: '234',
+        gh: '233'
+      },
+      validateResult: true,
+    },
+    init: function () {
+      this.bind();
+      this.getCountry();
+    },
+    bind: function () {
+      $('#formSubmit').on('click', () => {
+        var {data: {isShowPhone}} = this;
+        let validateResult, type, value;
+        if (isShowPhone) {
+          type = 'phone';
+          value = $('#phoneInput').val().trim();
+          validateResult = this.validatePhone(value);
+        } else {
+          type = 'email';
+          value = $('#emailInput').val().trim();
+          validateResult = this.validateEmail(value);
+        }
+        this.data.validateResult = validateResult;
+        if (validateResult) {
+          this.submitInfo(type, value);
+        } else {
+          $('#formRemind').show()
+            .text(type === 'phone' ? 'Please enter the valid mobile number.' : 'Please enter the valid email.');
+        }
+      });
+
+      $('#dialogConfirm').on('click', () => {
+        $('#dialog').hide();
+        $('#phoneInput').val('');
+        $('#emailInput').val('');
+      });
+
+      $('#dialogClose').on('click', () => {
+        $('#dialog').hide();
+      });
+
+      $('#formChange').on('click', () => {
+        $('#formRemind').hide();
+        var {data: {isShowPhone}} = this;
+        this.data.isShowPhone = !isShowPhone;
+        var phoneCont = $('#phoneCont');
+        var emailCont = $('#emailCont');
+        var formChange = $('#formChange');
+        if (this.data.isShowPhone) {
+          phoneCont.show();
+          emailCont.hide();
+          formChange.text('Use email');
+        } else {
+          phoneCont.hide();
+          emailCont.show();
+          formChange.text('Use mobile number');
+        }
+      });
+
+      $('#phoneInput').on('input', () => {
+        if (this.data.validateResult) return;
+        $('#formRemind').hide();
+      });
+
+      $('#emailInput').on('input', () => {
+        if (this.data.validateResult) return;
+        $('#formRemind').hide();
+      });
+
+    },
+    validatePhone(phone) {
+      var keReg = /(^\d{9,10}$)/;
+      var ngReg = /(^07\d{9}$)|(^7\d{9}$)|(^08\d{9}$)|(^8\d{9}$)|(^09\d{9}$)|(^9\d{9}$)/;
+      var ghReg = /[0-9]{9,10}/;
+      var {data: {country}} = this;
+      switch (country) {
+        case 'ke':
+          return keReg.test(phone);
+        case 'ug':
+          return keReg.test(phone);
+        case 'ng':
+          return ngReg.test(phone);
+        case 'gh':
+          return ghReg.test(phone);
+      }
+    },
+    validateEmail(email) {
+      var emailReg = /^([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)*@([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)+[\\\\.][A-Za-z]{2,3}([\\\\.][A-Za-z]{2})?$/;
+      return emailReg.test(email);
+    },
+    getCountry() {
+      $.get('https://bet-apic.bangbet.com/api/bet/country', (res) => {
+        if (res && res.country) {
+          var country = res.country.toLowerCase();
+          // var country = 'ug';
+          var {data: {regionNumberList, countryList}} = this;
+          if (!countryList.includes(country)) return;
+          var region = regionNumberList[country];
+          $('#phoneLabel').text('+' + region);
+          this.data.country = country;
+        }
+      }, 'json')
+    },
+    submitInfo(type, value) {
+      let region, params = {};
+      let {country, regionNumberList} = this.data;
+      if (type === 'phone') {
+        region = regionNumberList[country];
+        if (value.startsWith('0')) value = value.substring(1);
+        params.username = region + value;
+      } else {
+        params.email = value;
+        params.country = country;
+      }
+      $.post('https://bet-apic.bangbet.com/api/bet/comingSoon', params, (res) => {
+        if (res && res.result === 1) {
+          $('#dialog').show();
+        }
+      });
+    }
+  }</script><script src="main.js"></script></body></html>

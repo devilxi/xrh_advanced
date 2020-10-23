@@ -15,26 +15,29 @@
   </div>
   <!-- content -->
   <div class="content">
+    <!--    广告位-->
+    <div class="content-advertising-space">
+    </div>
+    <!--    切换国家-->
+    <div class="content-switch-country">
+      <img src="./img/login-country1.png">
+      <span class="country-txt">Uganda</span>
+     <span class="change">Change></span>
+    </div>
+    <!--    logo-->
+    <div class="content-logo">
+      <img src="./img/login-country1.png">
+    </div>
     <div class="cont_desc">
-      <p class="cont_desc_tit">Coming soon</p>
-      <p class="cont_desc_con first_para">Stay tuned. The highly anticipated Bangbet is on the way!</p>
-      <p class="cont_desc_con">To receive our launch notification and lots of promotions, please enter your mobile
-        number.</p>
+      <p class="cont_desc_tit">Join with your mobile number</p>
     </div>
     <div class="cont_form">
       <!-- phone -->
       <div class="phone_cont" id="phoneCont">
-        <label for="phoneInput" class="form_label" id="phoneLabel">+254</label>
+        <span for="phoneInput" class="form_label" id="phoneLabel">+254</span>
         <input type="tel" class="phone_input" placeholder="Mobile Number" id="phoneInput" maxlength="10">
       </div>
-      <!-- email -->
-      <div class="email_cont" id="emailCont">
-        <input type="text" class="email_input" placeholder="Enter your email address" id="emailInput" maxlength="30">
-      </div>
-      <p class="form_remind" id="formRemind">Please enter the valid mobile number.</p>
-      <p class="form_des">- or -</p>
-      <p class="form_change"><span id="formChange">Use email</span></p>
-      <div class="form_btn" id="formSubmit">SUBMIT</div>
+      <div class="form_btn" id="formSubmit">Next</div>
     </div>
   </div>
   <!-- dialog -->
@@ -48,7 +51,6 @@
   </div>
 
 </div>
-<script src="./js/jquery.min.js"></script>
 <script>
   (function (doc, win) {
     var docEle = doc.documentElement,
