@@ -1,0 +1,113 @@
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, legend, button
+form, fieldset, input, textarea, p, blockquote, th, td {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background: #fff;
+    font-size: 12px;
+    font-family: "SimSun", "宋体", "Arial Narrow";
+    margin: 0;
+}
+
+q:before, q:after {
+    content: '';
+}
+
+fieldset, img, abbr, acronym {
+    border: 0 none;
+}
+
+abbr, acronym {
+    font-variant: normal;
+}
+
+legend {
+    color: #000;
+}
+
+address, caption, cite, code, dfn, em, strong, th, var {
+    　　font-weight: normal;
+    　　font-style: normal;
+}
+
+/* 上下标 */
+sup {
+    vertical-align: text-top;
+}
+
+sub {
+    vertical-align: text-bottom;
+}
+
+table {
+    　　border-collapse: collapse;
+    　　border-spacing: 0;
+}
+
+caption, th {
+    text-align: left;
+}
+
+input, img, select {
+    vertical-align: middle;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+/* font-family */
+input, button, textarea, select, optgroup, option {
+    font-family: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+}
+
+/* titleStyle */
+h1, h2, h3, h4, h5, h6 {
+    　　font-weight: normal;
+    　　font-size: 100%;
+}
+
+del, ins, a {
+    text-decoration: none;
+}
+
+a:link {
+    color: #009;
+}
+
+a:visited {
+    color: #800080;
+}
+
+a:hover, a:active, a:focus {
+    color: #c00;
+    text-decoration: underline;
+}
+
+/* mouseAction */
+input[type="submit"] {
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}
+
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+.clear {
+    clear: both;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
