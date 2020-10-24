@@ -28,13 +28,43 @@ let userStatistics = {
         let countryDialogDom = document.getElementById('country-dialog');
         //关闭国家弹窗按钮的DOM
         let closeCountryItemDom = document.getElementById('close-country-item');
+        //挽留弹窗的DOM
+        let keepDialogDom = document.getElementById('keep-dialog');
+        //返回按钮的DOM
+        let headerBackDom = document.getElementById('header-back');
+        //关闭挽留弹窗按钮DOM
+        let closeKeepDom =  document.getElementById('close-keep');
+
         //添加监听事件
         switchCountryDom.addEventListener('click',function (){
             countryDialogDom.style.display = 'block';
         });
         closeCountryItemDom.addEventListener('click',function (){
             countryDialogDom.style.display = 'none';
+        });
+        headerBackDom.addEventListener('click',function (){
+            keepDialogDom.style.display= 'block';
+        });
+        closeKeepDom.addEventListener('click',function (){
+            keepDialogDom.style.display= 'none';
         })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         $('#formSubmit').on('click', () => {
             var {data: {isShowPhone}} = this;

@@ -12,7 +12,7 @@
   <!-- header -->
   <div class="header">
     <i class="icon iconfont iconIcon_Back_ back-icon"></i>
-    <span class="header-back">Back</span>
+    <span class="header-back" id="header-back">Back</span>
   </div>
   <!-- content -->
   <div class="content">
@@ -110,6 +110,7 @@ VZNf15uVK72nMK2e3J7CnBHxp5zUqOiSeVUkfHWTRkSQ7YVLJtaVWGWbWcP/KtvMco4/X5VMzXa7
   <div class="keep-dialog" id="keep-dialog">
     <div class="keep-dialog-cover">
       <div class="keep-title">Abandon KARIBU BONUS?</div>
+      <i class="icon iconfont iconIcon_Close_ close-icon" id="close-keep"></i>
       <div  class="keep-sub-title">
         You almost got it ! The 1000 bonus is available ONLY ONCE for new customers.
       </div>
@@ -120,8 +121,21 @@ VZNf15uVK72nMK2e3J7CnBHxp5zUqOiSeVUkfHWTRkSQ7YVLJtaVWGWbWcP/KtvMco4/X5VMzXa7
     </div>
   </div>
   <!--  弹起Otp弹窗-->
-  <div>
-    OPT
+  <div class="otp-dialog" id="otp-dialog">
+   <div class="otp-dialog-cover">
+     <div class="otp-dialog-title">Enter OTP to verify</div>
+     <i class="icon iconfont iconIcon_Close_ close-icon" id="close-otp"></i>
+     <div class="opt-tips">
+       A 4-digit OTP has been sent to 0822332332
+     </div>
+     <div></div>
+     <div class="otp-down">
+       It may take a while to receive OTP. Please wait…
+     </div>
+     <div class="otp-complete">
+       Complete
+     </div>
+   </div>
   </div>
 </div>
 </body>

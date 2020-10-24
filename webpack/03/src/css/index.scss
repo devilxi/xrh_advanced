@@ -1,4 +1,10 @@
-
+//关闭按钮样式
+.close-icon{
+    position: absolute;
+    top: 0.24rem;
+    right: 0.24rem;
+    font-size: 0.32rem;
+}
 /* container */
 .container {
     background: #FFFFFF;
@@ -217,12 +223,6 @@
             font-weight: bold;
             color: #393A46;
         }
-        .close-icon{
-            position: absolute;
-            top: 0.24rem;
-            right: 0.24rem;
-            font-size: 0.32rem;
-        }
         .country-item{
             display: flex;
             padding: 0 0.24rem 0 0.34rem;
@@ -249,7 +249,7 @@
     bottom: 0;
     right: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    //display: none;
+    display: none;
     .keep-dialog-cover{
         width: 90%;
         background: #FFFFFF;
@@ -287,7 +287,7 @@
             color: #FFFFFF;
         }
         .tips-title{
-            margin-top: 04rem;
+            margin-top: 0.4rem;
             font-size: 0.24rem;
             font-family: Roboto-Regular, Roboto;
             font-weight: 400;
@@ -304,6 +304,57 @@
             font-size: 0.24rem;
             font-family: LucidaGrande;
             color: #517AB8;
+        }
+    }
+}
+
+.otp-dialog{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    //display: none;
+    .otp-dialog-cover{
+        width: 100%;
+        background: #FFFFFF;
+        box-sizing: border-box;
+        padding: 0.48rem 0.48rem 0.4rem;
+        position: absolute;
+        bottom: 0;
+        .otp-dialog-title{
+            font-size: 0.32rem;
+            font-family: Roboto-Bold, Roboto;
+            font-weight: bold;
+            color: #32333D;
+        }
+        .opt-tips{
+            margin-top: 0.28rem;
+            font-size: 0.28rem;
+            font-family: Roboto-Regular, Roboto;
+            font-weight: 400;
+            color: #32333D;
+        }
+        .otp-down{
+            font-size: 0.24rem;
+            font-family: Roboto-Regular, Roboto;
+            font-weight: 400;
+            color: #9CA0AB;
+        }
+        .otp-complete{
+            margin-top: 0.4rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 6.4rem;
+            height: 0.96rem;
+            background: #10A310;
+            border-radius: 0.08rem;
+            font-size: 0.32rem;
+            font-family: Roboto-Regular, Roboto;
+            font-weight: 400;
+            color: #FFFFFF;
         }
     }
 }
