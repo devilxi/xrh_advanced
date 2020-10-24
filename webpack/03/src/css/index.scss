@@ -11,9 +11,15 @@
     align-items: center;
     height: 0.8rem;
     width: 100%;
+    padding: 0 0.2rem;
     background: #FFFFFF;
+    .back-icon{
+        font-size: 0.36rem;
+        color: #32333D;
+    }
     .header-back{
         font-size: 0.28rem;
+        margin-left: 0.16rem;
         font-family: Roboto-Regular, Roboto;
         font-weight: 400;
         color: #32333D;
@@ -42,6 +48,9 @@
             line-height: 0.32rem;
         }
         .change{
+            display: flex;
+            justify-content: center;
+            align-items: center;
             margin-left: 0.12rem;
             font-size: 0.24rem;
             font-family: Roboto-Regular, Roboto;
@@ -164,14 +173,26 @@
 }
 
 .cont_login{
+    height: 0.72rem;
+    line-height: 0.72rem;
+    margin-top: 0.2rem;
     font-size: 0.28rem;
+    text-align: center;
     font-family: Roboto-Regular, Roboto;
     font-weight: 400;
     color: #517AB8;
 }
+.cont_tips{
+    margin-top: 1rem;
+    font-size: 0.24rem;
+    text-align: center;
+    font-family: Roboto-Regular, Roboto;
+    font-weight: 400;
+    color: #32333D;
+}
 
 /* dialog */
-.dialog {
+.country-dialog {
     position: fixed;
     top: 0;
     left: 0;
@@ -179,57 +200,110 @@
     right: 0;
     background-color: rgba(0, 0, 0, 0.5);
     display: none;
+    .country-dialog-cont {
+        width: 90%;
+        background: #FFFFFF;
+        border-radius: 0.1rem;
+        box-sizing: border-box;
+        padding: 0.48rem 0.48rem 0.4rem;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        .cont-tit{
+            margin-bottom: 0.34rem;
+            font-size: 0.38rem;
+            font-family: Roboto-Bold, Roboto;
+            font-weight: bold;
+            color: #393A46;
+        }
+        .close-icon{
+            position: absolute;
+            top: 0.24rem;
+            right: 0.24rem;
+            font-size: 0.32rem;
+        }
+        .country-item{
+            display: flex;
+            padding: 0 0.24rem 0 0.34rem;
+            align-items: center;
+            height: 0.88rem;
+            margin-top: 0.24rem;
+            background: #FFFFFF;
+            border-radius: 0.08rem;
+            border: 0.02rem solid #F2F3F5;
+            .country-item-title{
+                font-size: 0.32rem;
+                font-family: Roboto-Regular, Roboto;
+                font-weight: 400;
+                color: #424250;
+            }
+        }
+    }
 }
 
-.dialog-cont {
-    width: 91.1%;
-    height: 3.52rem;
-    background: #FFFFFF;
-    border-radius: 0.1rem;
-    box-sizing: border-box;
-    padding: 0.48rem 0.48rem 0.4rem;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.dialog-cont .cont-tit {
-    font-size: 0.32rem;
-    font-family: Roboto-Bold, Roboto;
-    font-weight: bold;
-    color: #32333D;
-    line-height: 0.4rem;
-}
-
-.dialog-cont .cont-close {
-    font-size: 0.3rem;
-    font-family: Arial;
-    color: #9CA0AB;
-    position: absolute;
-    right: 0.24rem;
-    top: 0.24rem;
-}
-
-.dialog-cont .cont-des {
-    font-size: 0.28rem;
-    font-family: Roboto-Regular, Roboto;
-    font-weight: 400;
-    color: #32333D;
-    line-height: 0.36rem;
-    margin-top: 0.24rem;
-    margin-bottom: 0.4rem;
-}
-
-.dialog-cont .cont-btn {
-    width: 100%;
-    height: 0.88rem;
-    text-align: center;
-    border-radius: 0.08rem;
-    background-color: #10A310;
-    font-size: 0.32rem;
-    font-family: Roboto-Regular, Roboto;
-    font-weight: 400;
-    color: #FFFFFF;
-    line-height: 0.88rem;
+.keep-dialog{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    //display: none;
+    .keep-dialog-cover{
+        width: 90%;
+        background: #FFFFFF;
+        border-radius: 0.1rem;
+        box-sizing: border-box;
+        padding: 0.48rem 0.48rem 0.4rem;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        .keep-title{
+            font-size: 0.38rem;
+            font-family: Roboto-Bold, Roboto;
+            font-weight: bold;
+            color: #32333D;
+        }
+        .keep-sub-title{
+            margin-top: 0.2rem;
+            font-size: 0.28rem;
+            font-family: Roboto-Regular, Roboto;
+            font-weight: 400;
+            color: #393A46;
+        }
+        .keep-continue{
+            margin-top: 0.4rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 5.6rem;
+            height: 0.88rem;
+            background: #10A310;
+            border-radius: 0.08rem;
+            font-size: 0.32rem;
+            font-family: ArialMT;
+            color: #FFFFFF;
+        }
+        .tips-title{
+            margin-top: 04rem;
+            font-size: 0.24rem;
+            font-family: Roboto-Regular, Roboto;
+            font-weight: 400;
+            color: #9CA0AB;
+        }
+        .tips-ussd{
+            margin-top: 0.28rem;
+            font-size: 0.24rem;
+            font-family: LucidaGrande;
+            color: #6285C3;
+        }
+        .tips-service{
+            margin-top: 0.24rem;
+            font-size: 0.24rem;
+            font-family: LucidaGrande;
+            color: #517AB8;
+        }
+    }
 }

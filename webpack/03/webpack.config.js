@@ -41,6 +41,11 @@ module.exports={
                     loader: 'url-loader'
                 }]
             },
+            //字体图标
+            {
+                test:/\.(woff|svg|eot|ttf)\??.*$/,
+                loader:"url-loader"
+            },
             //打包css文件
             {
                 test:/\.css$/,
