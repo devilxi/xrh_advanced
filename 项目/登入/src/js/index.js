@@ -2,13 +2,13 @@ import  "../css/base.css";
 import "../css/index.scss";
 import "../assets/icon/iconfont.css"
 import "./main"
-import httpRequest from '../request/index'
+import request from "../request/index"
+import initCountry from "./country"
 
 let userStatistics = {
     data: {
         isShowPhone: true,
         country: 'ke',
-        countryList: ['ke', 'ug', 'ng', 'gh'],
         regionNumberList: {
             ke: '254',
             ug: '256',
@@ -16,10 +16,36 @@ let userStatistics = {
             gh: '233'
         },
         validateResult: true,
+        countryList:[]
     },
     init: function () {
+        this.getConfig();
+        initCountry();
         this.bind();
-        this.getCountry();
+    },
+    getConfig(){
+        request("POST", 'https://bet-api.gbank.team/api/bet/message/list', JSON.stringify({
+            country: "ke",
+            type: "register"
+        }), 30000, function (res){
+            let contentAdvertisingSpaceDom = document.getElementById('content-advertising-space');
+            let registerButtonBubbleDom = document.getElementById('register-button-bubble');
+            if(res && res.result == 1){
+                if(res.data.messages.RegisterAdpicture){
+                    let contentAdvertisingSpaceImgDom = document.createElement('img');
+                    contentAdvertisingSpaceImgDom.src = res.data.messages.RegisterAdpicture;
+                    contentAdvertisingSpaceDom.append(contentAdvertisingSpaceImgDom);
+                    contentAdvertisingSpaceDom.style.display = 'block';
+                }
+                if(res.data.messages.RegisterButtonBubble){
+                    registerButtonBubbleDom.src = res.data.messages.RegisterButtonBubble;
+                    registerButtonBubbleDom.style.display = 'block';
+                }
+            }else {
+                contentAdvertisingSpaceDom.style.display = 'none';
+                registerButtonBubbleDom.style.display = 'none';
+            }
+        });
     },
     bind: function () {
         //切换国家按钮DOM
@@ -34,9 +60,15 @@ let userStatistics = {
         let headerBackDom = document.getElementById('header-back');
         //关闭挽留弹窗按钮DOM
         let closeKeepDom =  document.getElementById('close-keep');
-
+        // opt弹窗的DOM
+        let otpDialogDom = document.getElementById('otp-dialog');
+        // otp关闭按钮DOM
+        let closeOtpDom = document.getElementById('close-otp');
         //添加监听事件
-        switchCountryDom.addEventListener('click',function (){
+        switchCountryDom.addEventListener('click',function (e){
+            //处理选中哪一个
+            let countryItemDom = document.getElementById('country-item-1');
+            countryItemDom.className = 'country-item-select';
             countryDialogDom.style.display = 'block';
         });
         closeCountryItemDom.addEventListener('click',function (){
@@ -48,82 +80,10 @@ let userStatistics = {
         closeKeepDom.addEventListener('click',function (){
             keepDialogDom.style.display= 'none';
         })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $('#formSubmit').on('click', () => {
-            var {data: {isShowPhone}} = this;
-            let validateResult, type, value;
-            if (isShowPhone) {
-                type = 'phone';
-                value = $('#phoneInput').val().trim();
-                validateResult = this.validatePhone(value);
-            } else {
-                type = 'email';
-                value = $('#emailInput').val().trim();
-                validateResult = this.validateEmail(value);
-            }
-            this.data.validateResult = validateResult;
-            if (validateResult) {
-                this.submitInfo(type, value);
-            } else {
-                $('#formRemind').show()
-                    .text(type === 'phone' ? 'Please enter the valid mobile number.' : 'Please enter the valid email.');
-            }
-        });
-
-        $('#dialogConfirm').on('click', () => {
-            $('#dialog').hide();
-            $('#phoneInput').val('');
-            $('#emailInput').val('');
-        });
-
-        $('#dialogClose').on('click', () => {
-            $('#dialog').hide();
-        });
-
-        $('#formChange').on('click', () => {
-            $('#formRemind').hide();
-            var {data: {isShowPhone}} = this;
-            this.data.isShowPhone = !isShowPhone;
-            var phoneCont = $('#phoneCont');
-            var emailCont = $('#emailCont');
-            var formChange = $('#formChange');
-            if (this.data.isShowPhone) {
-                phoneCont.show();
-                emailCont.hide();
-                formChange.text('Use email');
-            } else {
-                phoneCont.hide();
-                emailCont.show();
-                formChange.text('Use mobile number');
-            }
-        });
-
-        $('#phoneInput').on('input', () => {
-            if (this.data.validateResult) return;
-            $('#formRemind').hide();
-        });
-
-        $('#emailInput').on('input', () => {
-            if (this.data.validateResult) return;
-            $('#formRemind').hide();
-        });
+        closeOtpDom.addEventListener('click',function (){
+            otpDialogDom.style.display = 'none';
+        })
+        return ;
     },
     validatePhone(phone) {
         var keReg = /(^\d{9,10}$)/;
@@ -141,23 +101,6 @@ let userStatistics = {
                 return ghReg.test(phone);
         }
     },
-    validateEmail(email) {
-        var emailReg = /^([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)*@([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)+[\\\\.][A-Za-z]{2,3}([\\\\.][A-Za-z]{2})?$/;
-        return emailReg.test(email);
-    },
-    getCountry() {
-        $.get('https://bet-apic.bangbet.com/api/bet/country', (res) => {
-            if (res && res.country) {
-                var country = res.country.toLowerCase();
-                // var country = 'ug';
-                var {data: {regionNumberList, countryList}} = this;
-                if (!countryList.includes(country)) return;
-                var region = regionNumberList[country];
-                $('#phoneLabel').text('+' + region);
-                this.data.country = country;
-            }
-        }, 'json')
-    },
     submitInfo(type, value) {
         let region, params = {};
         let {country, regionNumberList} = this.data;
@@ -174,7 +117,7 @@ let userStatistics = {
                 $('#dialog').show();
             }
         });
-    }
+    },
 }
 
 window.onload = function(){
