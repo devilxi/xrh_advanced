@@ -47,6 +47,11 @@ let userStatistics = {
             }
         });
     },
+    getCountry(){
+        //获取缓存中的国家数值
+        let countryCode =  window.localStorage.getItem('country');
+
+    },
     bind: function () {
         //切换国家按钮DOM
         let switchCountryDom = document.getElementById('switch-country');
@@ -66,9 +71,24 @@ let userStatistics = {
         let closeOtpDom = document.getElementById('close-otp');
         //添加监听事件
         switchCountryDom.addEventListener('click',function (e){
-            //处理选中哪一个
-            let countryItemDom = document.getElementById('country-item-1');
-            countryItemDom.className = 'country-item-select';
+            let countryCode =  window.localStorage.getItem('country');
+            let countryItemDom_Uganda = document.getElementById('country-item-Uganda');
+            let countryItemDom_Nigeria = document.getElementById('country-item-Nigeria');
+            let countryItemDom_Kenya = document.getElementById('country-item-Kenya');
+            let countryItemId = 'country-item';
+            if(countryCode == 1){
+                countryItemDom_Uganda.className = 'country-item-select';
+                countryItemDom_Kenya.className = 'country-item';
+                countryItemDom_Nigeria.className = 'country-item';
+            }else if(countryCode == 2){
+                countryItemDom_Nigeria.className = 'country-item-select';
+                countryItemDom_Kenya.className = 'country-item';
+                countryItemDom_Uganda.className = 'country-item';
+            }else {
+                countryItemDom_Kenya.className = 'country-item-select';
+                countryItemDom_Uganda.className = 'country-item';
+                countryItemDom_Nigeria.className = 'country-item';
+            }
             countryDialogDom.style.display = 'block';
         });
         closeCountryItemDom.addEventListener('click',function (){
