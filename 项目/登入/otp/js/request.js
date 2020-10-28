@@ -1,5 +1,5 @@
 //HTTP请求
-export  default  function httpAjax(method,dataType, url, params, timeout, callback, errback) {
+function httpAjax(method,dataType, url, params, timeout, callback, errback) {
     timeout = 30000;
     var xhr = new XMLHttpRequest();
     xhr.timeout = timeout;

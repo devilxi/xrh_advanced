@@ -21,8 +21,8 @@
     </div>
     <!--    切换国家-->
     <div class="content-switch-country" id="switch-country">
-      <img src="https://www.bangbet.com/images/country/Kenya%20flag_48@2x.png">
-      <span class="country-txt">Kenya</span>
+      <img  id="switch-country-icon">
+      <span class="country-txt" id="switch-country-name"></span>
       <span class="change">Change></span>
     </div>
     <!--    logo-->
@@ -79,11 +79,17 @@ VZNf15uVK72nMK2e3J7CnBHxp5zUqOiSeVUkfHWTRkSQ7YVLJtaVWGWbWcP/KtvMco4/X5VMzXa7
       <p class="cont_desc_tit">Join with your mobile number</p>
     </div>
     <div class="cont_form">
+    <form id="sub-form">
       <!-- phone -->
       <div class="phone_cont" id="phoneCont">
-        <span for="phoneInput" class="form_label" id="phoneLabel">+254</span>
-        <input type="tel" class="phone_input" placeholder="Mobile Number" id="phoneInput" maxlength="10">
+        <span for="phoneInput" class="form_label" id="phoneLabel"></span>
+        <input type="txt" class="phone_input" placeholder="Mobile Number" id="phoneInput" maxlength="10">
       </div>
+    </form>
+     <div class="registered-error" id="registered-error">
+       <span>Mobile number already registered.</span>
+       <span  style="color: #517AB8">Log In>></span>
+     </div>
       <div class="form_btn" id="formSubmit">
         Next
         <img class="register-button-bubble" id="register-button-bubble">
@@ -117,27 +123,8 @@ VZNf15uVK72nMK2e3J7CnBHxp5zUqOiSeVUkfHWTRkSQ7YVLJtaVWGWbWcP/KtvMco4/X5VMzXa7
     </div>
   </div>
   <!--  弹起Otp弹窗-->
-  <div class="otp-dialog" id="otp-dialog">
-   <div class="otp-dialog-cover">
-     <div class="otp-dialog-title">Enter OTP to verify</div>
-     <i class="icon iconfont iconIcon_Close_ close-icon" id="close-otp"></i>
-     <div class="opt-tips">
-       A 4-digit OTP has been sent to 0822332332
-     </div>
-     <div class="verification-code">
-       <div class="verification-code-item"></div>
-       <div class="verification-code-item"></div>
-       <div class="verification-code-item"></div>
-       <div class="verification-code-item"></div>
-     </div>
-     <div class="otp-down">
-       It may take a while to receive OTP. Please wait…
-     </div>
-     <div class="other-verification"></div>
-     <div class="otp-complete">
-       Complete
-     </div>
-   </div>
+  <div class="iframe-cover" id="otpIframe">
+    <iframe class="otpIframe"  id="otpIframeDom"></iframe>
   </div>
 </div>
 </body>

@@ -1,0 +1,334 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>BangBet | Highest odds betting site</title>
+</head>
+<link rel="stylesheet" type="text/css" href="./icon/iconfont.css" />
+<style>
+    .otp-dialog-cover{
+        width: 100%;
+        background: #FFFFFF;
+        box-sizing: border-box;
+        padding: 0.48rem 0.48rem 0.4rem;
+        margin-bottom: 1rem;
+    }
+    .otp-dialog-title{
+        display: flex;
+        font-size: 0.32rem;
+        font-family: Roboto-Bold, Roboto;
+        font-weight: bold;
+        color: #32333D;
+    }
+    .opt-tips{
+        margin-top: 0.28rem;
+        font-size: 0.28rem;
+        font-family: Roboto-Regular, Roboto;
+        font-weight: 400;
+        color: #32333D;
+    }
+    .verification-code{
+        display: flex;
+        flex-direction: row;
+        margin: 0.16rem 0 0.38rem 0;
+    }
+    .verification-code-item{
+        height: 0.88rem;
+        width: 3.85rem;
+        background: #FFFFFF;
+        border-radius: 0.06rem;
+        border: 0.02rem solid #C0C7CF;
+        font-size: 0.42rem;
+        font-weight: 400;
+        color: #32333D;
+        padding-left: 0.32rem;
+        letter-spacing:0.63rem;
+    }
+    .otp-down{
+        font-size: 0.24rem;
+        font-family: Roboto-Regular, Roboto;
+        font-weight: 400;
+        color: #9CA0AB;
+    }
+    .otp-complete{
+        margin-top: 0.4rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 0.96rem;
+        background: #eef1f6;
+        border-radius: 0.08rem;
+        font-size: 0.32rem;
+        font-family: Roboto-Regular, Roboto;
+        font-weight: 400;
+        color: #A7B6C7;
+        position: fixed;
+        width: 6.2rem;
+        bottom: 0.4rem;
+    }
+    .otp-complete-activation{
+        margin-top: 0.4rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 0.96rem;
+        background: #10A310;
+        border-radius: 0.08rem;
+        font-size: 0.32rem;
+        font-family: Roboto-Regular, Roboto;
+        font-weight: 400;
+        color: #FFFFFF;
+        position: fixed;
+        width: 6.2rem;
+        bottom: 0.4rem;
+    }
+    .other-verification-title{
+        font-size: 0.24rem;
+        font-family: Roboto-Regular, Roboto;
+        font-weight: 400;
+        color: #9CA0AB;
+    }
+    .pay-cover{
+
+    }
+    .pay-item{
+        display: flex;
+        align-items: center;
+        width: 6.56rem;
+        height: 0.88rem;
+        border-bottom: 0.02rem solid #F2F3F5;
+    }
+    .pay-item-icon{
+        height: 0.32rem;
+        width: 0.32rem;
+        background-color: red;
+    }
+    .pay-item-txt{
+        margin-left:0.16rem;
+        font-size:0.32rem;
+        font-family: Roboto-Regular, Roboto;
+        font-weight: 400;
+        color: #32333D;
+    }
+    .pay-item-more{
+        margin-left: auto;
+        font-size: 0.28rem;
+        font-family: Roboto-Regular, Roboto;
+        font-weight: 400;
+        color: #9CA0AB;
+    }
+    .otp-error{
+        margin-left: 0.2rem;
+        font-size: 0.24rem;
+        font-family: Roboto-Regular, Roboto;
+        font-weight: 400;
+        color: #F23441;
+        display: none;
+    }
+    .close-icon{
+        color: #C0C7CF;
+        top: 0.24rem;
+        right: 0.24rem;
+        font-size: 0.32rem;
+        margin-left: auto;
+        font-weight: lighter;
+      }
+</style>
+<body>
+<div class="otp-dialog" id="otp-dialog">
+    <div class="otp-dialog-cover">
+        <div class="otp-dialog-title">
+            Enter OTP to verify
+            <i class="icon iconfont iconIcon_Close_ close-icon" id="close-otp-item"></i>
+        </div>
+        <div class="opt-tips">
+            A 4-digit OTP has been sent to <span  id="phoneTel"></span>
+        </div>
+        <div class="verification-code">
+            <input class="verification-code-item" maxlength="4" id="verification-code"/>
+            <span class="otp-error" id="otp-error">OTP is incorrect</span>
+        </div>
+        <div class="otp-down" id="otp-down-tips">
+            It may take a while to receive OTP. Please wait…
+            <span id="otp-down-time" style="color: #32333D"></span>
+        </div>
+        <div class="other-verification" id="other-verification">
+            <div class="other-verification-title">
+                Other ways to verify
+            </div>
+            <!--            其余支付方式列表-->
+            <div class="pay-cover">
+                <div class="pay-item">
+                    <i class="pay-item-icon"></i>
+                    <span class="pay-item-txt">Dial USSD</span>
+                    <span class="pay-item-more">*347*89# > </span>
+                </div>
+                <div class="pay-item">
+                    <i class="pay-item-icon"></i>
+                    <span class="pay-item-txt">Make a call</span>
+                    <span class="pay-item-more">to 017006239</span>
+                </div>
+                <div class="pay-item">
+                    <i class="pay-item-icon"></i>
+                    <span class="pay-item-txt">Text a SMS</span>
+                    <span class="pay-item-more">to 019006239</span>
+                </div>
+                <div class="pay-item">
+                    <i class="pay-item-icon"></i>
+                    <span class="pay-item-txt">SMS OTP</span>
+                    <span class="pay-item-more"> > </span>
+                </div>
+            </div>
+        </div>
+        <div class="otp-complete" id="otp-complete-button">
+            Complete
+        </div>
+    </div>
+</div>
+<script src="js/index.js"></script>
+<script src="js/request.js"></script>
+<script>
+    function getUrlParam(name) {
+        let urlObj = {};
+        let hrefArr = window.location.href.split("?");
+        let query = hrefArr.length > 1 ? hrefArr[hrefArr.length - 1] : "";
+        let vars = query.split("&");
+        for (let i = 0; i < vars.length; i++) {
+            let pair = vars[i].split("=");
+            if(pair.length > 1){
+                urlObj[pair[0]] = pair[1];
+            }
+        }
+        return urlObj[name];
+    }
+
+    function getRandom(min, max) {
+        if (arguments.length === 2) {
+            return Math.floor(min + Math.random() * ((max + 1) - min))
+        } else {
+            return null;
+        }
+    }
+    const COUNTRY_CONFIG = {
+        'ke':'254',
+        'ug':'256',
+        'ng':'234'
+    };
+    window.onload = function (){
+        //处理手机号和国家
+        const PHONE = getUrlParam('phone');
+        const COUNTRY = getUrlParam('country');
+        let _phone = PHONE;
+        if(PHONE.slice(0,1) == 0){
+            _phone = _phone.slice(1,_phone.length);
+        }
+        const SUBMIT_PHONE = COUNTRY_CONFIG[COUNTRY] + _phone;
+        //支付列表顺序
+        let payList = [];
+
+        //判断那种验证方式 1、发送验证码 2、吊起多种验证方式
+        let otherVerificationDom = document.getElementById('other-verification');
+        let otpDownTipsDom = document.getElementById('otp-down-tips');
+        let otpDownTimeDom = document.getElementById('otp-down-time');
+        let otpCompleteButtonDom = document.getElementById('otp-complete-button');
+        let phoneTelDom = document.getElementById('phoneTel');
+        let verificationCodeDom = document.getElementById('verification-code');
+        let otpErrorDom = document.getElementById('otp-error');
+        let closeOtpItemDom = document.getElementById('close-otp-item');
+        closeOtpItemDom.addEventListener('click',function (){
+            //调用父组件中的dom元素
+            let otpIframeDom = window.parent.document.getElementById('otpIframe');
+            otpIframeDom.style.display = 'none';
+        });
+        verificationCodeDom.focus();
+        verificationCodeDom.addEventListener('input',function (){
+            let codeLen = verificationCodeDom.value.trim().length;
+            if(codeLen == 4){
+                otpCompleteButtonDom.className = 'otp-complete-activation';
+            }else {
+                otpCompleteButtonDom.className = 'otp-complete';
+            }
+        })
+        phoneTelDom.innerText = PHONE;
+        otpCompleteButtonDom.addEventListener('click',function (){
+            let verificationCode = verificationCodeDom.value.trim();
+            if(verificationCode.length != 4) return ;
+            //进行验证码验证 https://casino-api.gbank.team/api/center/checkCode
+            httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/center/checkCode', JSON.stringify({
+                account: SUBMIT_PHONE,
+                code: verificationCode,
+                verityCodeType: 1
+            }), 30000, function (res){
+                //验证成功掉注册接口 https://casino-api.gbank.team/api/center/mini/register
+                if(res.result == 1){
+                    //调用登入接口
+                    httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/center/mini/register', JSON.stringify({
+                        account: SUBMIT_PHONE,
+                        channel: "USWVVSYS",
+                        clientTag: 0,
+                        codeReference: res.data,
+                        country: COUNTRY,
+                        deviceUid: "b1d43966-b815-b69f-dda6-6cb43a5c9745",
+                        password: "e3e00b83c5d52d2654ac164adead1942",
+                        platform: 3,
+                        randcode: "123456"
+                    }), 30000, function (res){
+                        if(res.result == 1){
+                            //注册成功调入登入接口https://casino-api.gbank.team/api/center/login
+                            httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/center/login', JSON.stringify({
+                                account: SUBMIT_PHONE,
+                                device: {},
+                                password: "e3e00b83c5d52d2654ac164adead1942",
+                                platform: 3
+                            }), 30000, function (res){
+                                if(res.result == 1){
+                                    //跳转注册成功中转页面
+
+                                }
+                            });
+                        }
+                    });
+                }
+                else {
+                    otpErrorDom.style.display = 'block';
+                }
+            });
+        });
+        httpAjax("POST", 'JSON', 'https://bet-api.gbank.team/api/bet/message/list', JSON.stringify({
+            country: COUNTRY,
+            type: "register"
+        }), 30000, function (res){
+            let messages =  res.data.messages;
+            if(messages.VerifyMobileNumberWays){
+                payList = messages.VerifyMobileNumberWays.split('&&');
+            }
+            console.log(payList,'payList');
+            if(res.result == 1 && res.data &&  messages.RegisterOTPFirstPage == 'off'){
+                otherVerificationDom.style.display = 'none';
+                //请求获取验证码的接口 https://casino-api.gbank.team/api/payments/sms/code
+                httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/payments/sms/code', JSON.stringify({
+                    account: SUBMIT_PHONE,
+                    verityCodeType: 1
+                }), 30000, function (res){
+                    //进行倒计时
+                    let smsDownTime = messages.RegisterOTPWaitTime || 15;
+                    let smsInterval = setInterval(function (){
+                        otpDownTimeDom.innerText = smsDownTime + '\'\'';
+                        if(smsDownTime == 0){
+                            clearInterval(smsInterval);
+                            otpDownTipsDom.style.display = 'none';
+                            otherVerificationDom.style.display = 'block';
+                        }
+                        smsDownTime--;
+                    },1000);
+                });
+            }else {
+                otherVerificationDom.style.display = 'block';
+            }
+        });
+    };
+</script>
+</body>
+</html>
