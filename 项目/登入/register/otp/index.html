@@ -282,41 +282,64 @@
         'ug':'256',
         'ng':'234'
     };
+    //处理手机号和国家
+    const PHONE = getUrlParam('phone');
+    const COUNTRY = getUrlParam('country');
+    let _phone = PHONE;
+    if(PHONE.slice(0,1) == 0){
+        _phone = _phone.slice(1,_phone.length);
+    }
+    const SUBMIT_PHONE = COUNTRY_CONFIG[COUNTRY] + _phone;
     //国家支付列表的配置
     let PAY_LIST = {
         'ke':{
-            'USSD':{
+            'ussd':{
                 'icon':'icon iconfont iconIcon_DialUSSD_32 pay-item-icon',
                 'txt':'Dial USSD',
-                'phone':'*347*89# > '
             },
-            'CALL':{
+            'voicein':{
                 'icon':'icon iconfont iconIcon_Makecall_32 pay-item-icon',
                 'txt':'Make a call',
-                'phone':'*347*89# > '
             },
-            'OTP':{
+            'smsin':{
                 'icon':'icon iconfont iconIcon_SMSOTP_32 pay-item-icon',
-                'txt':'SMS OTP',
-                'phone':'*347*89# > '
-            },
-            'TEXTSMS':{
-                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
                 'txt':'Text a SMS',
-                'phone':'*347*89# > '
+            },
+            'voiceout':{
+                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
+                'txt':'Voice OTP',
+            },
+            'smsout':{
+                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
+                'txt':'SMS OTP',
             }
         }
     };
+
+    // 请求USSD接口
+    function codeVoice(){
+        // var ws = new WebSocket("wss://socket.gbank.team/bet/?device=h5&EIO=3&transport=websocket"); //创建WebSocket连接
+        // let sessionId = '';
+        // ws.onmessage = function(e){
+        //     sessionId = e.data.sid
+        //     //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
+        //     console.log(e.data.sid,'----1111111111111');
+        // }
+
+        httpAjax("POST", 'JSON', 'https://casino-api.gbank.team/api/payments/sms/code/voice', JSON.stringify({
+            account: SUBMIT_PHONE,
+            verityCodeType: 1,
+            version:2,
+            // sessionId:sessionId,
+            codeLength:4
+        }), 30000, function (res){
+            //数据进行轮询 60秒
+
+        });
+    };
+
     //页面加载执行
     window.onload = function (){
-        //处理手机号和国家
-        const PHONE = getUrlParam('phone');
-        const COUNTRY = getUrlParam('country');
-        let _phone = PHONE;
-        if(PHONE.slice(0,1) == 0){
-            _phone = _phone.slice(1,_phone.length);
-        }
-        const SUBMIT_PHONE = COUNTRY_CONFIG[COUNTRY] + _phone;
         //支付列表顺序
         let payList = [];
         //判断那种验证方式 1、发送验证码 2、吊起多种验证方式
@@ -397,32 +420,46 @@
 
         // 生成支付列表的DOM方法
         function generatePayDom(payList){
-            let payCoverDom = document.getElementById('pay-cover');
-            let payObject = PAY_LIST['ke'];
-            for (var i = 0 ; i < payList.length ; i++){
-                let key = payList[i];
-                let payObjectItem = payObject[key];
-                //创建div
-                let countryBox = document.createElement('div');
-                countryBox.className = 'pay-item'
-                countryBox.id = 'pay-item-' + key;
-                payCoverDom.append(countryBox);
-                let countryItemDom = document.getElementById('pay-item-' + key);
-                //创建图标
-                let countryImg = document.createElement('i');
-                countryImg.className = payObjectItem.icon;
-                countryItemDom.append(countryImg);
-                //创建文案
-                let countrySpan = document.createElement('span');
-                countrySpan.className = "pay-item-txt";
-                countrySpan.textContent = payObjectItem.txt;
-                countryItemDom.append(countrySpan);
-                //创建文案
-                let countrySpan2 = document.createElement('span');
-                countrySpan2.className = 'pay-item-more';
-                countrySpan2.textContent = payObjectItem.phone;
-                countryItemDom.append(countrySpan2);
-            }
+            //https://bet-api.gbank.team/api/bet/verify/code/template?country=ke
+            httpAjax("GET", 'JSON', 'https://bet-api.gbank.team/api/bet/verify/code/template?country='+COUNTRY, JSON.stringify({
+            }), 30000, function (res){
+                if(res && res.result){
+                    let templateData = res.data;
+                    let payCoverDom = document.getElementById('pay-cover');
+                    let payObject = PAY_LIST[COUNTRY];
+                    for (var i = 0 ; i < payList.length ; i++){
+                        let _key = payList[i];
+                        let key = payList[i].toLocaleLowerCase();
+                        let payObjectItem = payObject[key];
+                        //创建div
+                        let countryBox = document.createElement('div');
+                        countryBox.className = 'pay-item'
+                        countryBox.id = 'pay-item-' + key;
+                        payCoverDom.append(countryBox);
+                        let countryItemDom = document.getElementById('pay-item-' + key);
+                        //创建图标
+                        let countryImg = document.createElement('i');
+                        countryImg.className = payObjectItem.icon;
+                        countryItemDom.append(countryImg);
+                        //创建文案
+                        let countrySpan = document.createElement('span');
+                        countrySpan.className = "pay-item-txt";
+                        countrySpan.textContent = payObjectItem.txt;
+                        countryItemDom.append(countrySpan);
+                        //创建文案
+                        let countrySpan2 = document.createElement('span');
+                        countrySpan2.className = 'pay-item-more';
+                        countrySpan2.textContent = templateData[_key] ? templateData[_key] : templateData[key];
+                        countryItemDom.append(countrySpan2);
+                        //添加点击事件
+                        countryItemDom.addEventListener('click',function (){
+                            //调用验证码的接口
+                            codeVoice();
+                            window.location.href = 'tel:'+payObjectItem.phone;
+                        });
+                    }
+                }
+            });
         };
 
         //初始化进来请求基本数据
@@ -432,10 +469,12 @@
         }), 30000, function (res){
             let messages =  res.data.messages;
             if(messages.VerifyMobileNumberWays){
-                payList = messages.VerifyMobileNumberWays.split('&&');
+                payList = messages.OtherWaysToVerify.split('&&');
             }
+            //处理支付列表的DOM
             generatePayDom(payList);
-            if(res.result == 1 && res.data &&  messages.RegisterOTPFirstPage == 'off'){
+            // res.result == 1 && res.data &&  messages.RegisterOTPFirstPage == 'off'
+            if(true){
                 //直接发送验证码
                 otherVerificationDom.style.display = 'none';
                 //请求获取验证码的接口 https://casino-api.gbank.team/api/payments/sms/code
@@ -461,6 +500,7 @@
                 otherVerificationDom.style.display = 'block';
             }
         });
+        //处理验证方式点击事件
     };
 </script>
 </body>

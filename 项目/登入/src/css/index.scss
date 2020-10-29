@@ -41,6 +41,7 @@
         img{
             height: 1.28rem;
         }
+        display: none;
     }
     .content-switch-country{
         display: flex;
@@ -194,6 +195,7 @@
         right: 0.12rem;
         width: 2.02rem;
         height: 0.36rem;
+        display: none;
     }
 }
 
@@ -220,6 +222,7 @@
 }
 
 .cont_login{
+    display: block;
     height: 0.72rem;
     line-height: 0.72rem;
     margin-top: 0.2rem;
@@ -354,12 +357,14 @@
             color: #9CA0AB;
         }
         .tips-ussd{
+            display: block;
             margin-top: 0.28rem;
             font-size: 0.24rem;
             font-family: LucidaGrande;
             color: #6285C3;
         }
         .tips-service{
+            display: block;
             margin-top: 0.24rem;
             font-size: 0.24rem;
             font-family: LucidaGrande;

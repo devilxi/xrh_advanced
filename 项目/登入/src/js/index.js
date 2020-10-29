@@ -5,6 +5,18 @@ import "./main"
 import request from "../request/index"
 import initCountry from "./country"
 import countryConfig from '../until/configuration'
+//挽留弹窗配置
+const RETENTION_CONFIG = {
+    'ke':{
+        'title':'Abandon KARIBU BONUS?',
+    },
+    'ng':{
+        'title':'Abandon WELCOME BONUS?',
+    },
+    'ug':{
+        'title':'Abandon WELCOME BONUS?',
+    },
+}
 let userStatistics = {
     data: {
         buttonAvailable: false,
@@ -20,6 +32,19 @@ let userStatistics = {
         initCountry();
         //获取配置信息
         let country = window.localStorage['country'] == 0 ?'ke' : 'ng';
+        let params = new FormData();
+        params.append('platform','h5');
+        params.append('showPosition','retain');
+        params.append('country',country);
+        //获取挽留弹窗的提示数据 https://bet-api.gbank.team/api/bet/activity/list
+        request("POST", 'POSTJSON', 'https://bet-api.gbank.team/api/bet/activity/list', params, 30000, function (res){
+            let keepTitleDom = document.getElementById('keep-title');
+            let keepSubTitleDom = document.getElementById('keep-sub-title')
+            keepTitleDom.textContent = RETENTION_CONFIG[country].title;
+            if(res && res.result == 1){
+                keepSubTitleDom.textContent = res.data[0].subject;
+            }
+        });
         request("POST", 'JSON', 'https://bet-api.gbank.team/api/bet/message/list', JSON.stringify({
             country: country,
             type: "register"
@@ -85,6 +110,7 @@ let userStatistics = {
         //OTP弹层的DOM
         let otpIframeDom = document.getElementById('otpIframe');
         let otpIframeDomSrc = document.getElementById('otpIframeDom');
+        let keepContinueDom = document.getElementById('keep-continue');
         //添加监听事件
         switchCountryDom.addEventListener('click',function (e){
             let countryCode =  window.localStorage.getItem('country');
@@ -118,7 +144,11 @@ let userStatistics = {
         });
         closeKeepDom.addEventListener('click',function (){
             keepDialogDom.style.display= 'none';
+            window.location.href = 'https://www.gbank.team/';
         });
+        keepContinueDom.addEventListener('click',function (){
+            keepDialogDom.style.display= 'none';
+        })
         phoneInputDom.addEventListener('input',function (val){
             let inputLen = phoneInputDom.value.length;
             console.log(inputLen);
@@ -155,7 +185,7 @@ let userStatistics = {
                 request("POST",'POSTJSON', 'https://bet-api.gbank.team/api/bet/user/checkUserIsExist', params, 30000, function (res){
                     //判断用户是否已经注册
                     if(res.result === 1){
-                        otpIframeDomSrc.src = '../otp/index.html?phone=' + originalPhone + '&country=' + that.getCountry();
+                        otpIframeDomSrc.src = './otp/index.html?phone=' + originalPhone + '&country=' + that.getCountry();
                         //打开验证码的弹窗
                         otpIframeDom.style.display = 'block';
                     }else {
