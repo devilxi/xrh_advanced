@@ -111,6 +111,9 @@ let userStatistics = {
         let otpIframeDom = document.getElementById('otpIframe');
         let otpIframeDomSrc = document.getElementById('otpIframeDom');
         let keepContinueDom = document.getElementById('keep-continue');
+        let tipsUssdKeDom = document.getElementById('tips-ussd-ke');
+        let tipsUssdNgDom = document.getElementById('tips-ussd-ng');
+        let tipsUssdUgDom = document.getElementById('tips-ussd-ug');
         //添加监听事件
         switchCountryDom.addEventListener('click',function (e){
             let countryCode =  window.localStorage.getItem('country');
@@ -149,9 +152,26 @@ let userStatistics = {
         keepContinueDom.addEventListener('click',function (){
             keepDialogDom.style.display= 'none';
         })
+        let phoneMaxlength = 10;
+        //判断号码的长度
+        if( this.getCountry() == 'ke'){
+            tipsUssdKeDom.style.display = 'block'
+            tipsUssdNgDom.style.display = 'none'
+            tipsUssdUgDom.style.display = 'none'
+            phoneMaxlength = 10;
+        }else if(this.getCountry() == 'ng'){
+            tipsUssdKeDom.style.display = 'none'
+            tipsUssdNgDom.style.display = 'block'
+            tipsUssdUgDom.style.display = 'none'
+            phoneMaxlength = 11;
+        }else {
+            tipsUssdKeDom.style.display = 'none'
+            tipsUssdNgDom.style.display = 'none'
+            tipsUssdUgDom.style.display = 'block'
+            phoneMaxlength = 10;
+        }
         phoneInputDom.addEventListener('input',function (val){
             let inputLen = phoneInputDom.value.length;
-            console.log(inputLen);
             //控制按钮颜色
             if(inputLen > 8){
                 //讲按钮改变为可操作性状态
@@ -162,16 +182,17 @@ let userStatistics = {
                 formSubmitDOM.className = 'form_btn'
             }
             //控制输入手机号位数
-            if(inputLen > 10 ) {
-                return this.value = this.value.slice(0,10);
+            if(inputLen > phoneMaxlength ) {
+                return this.value = this.value.slice(0,phoneMaxlength);
             }
-            if(inputLen < 10 ){
+            if(inputLen < phoneMaxlength ){
                 registeredErrorDom.style.display = 'none';
             }
         });
         formSubmitDOM.addEventListener('click',function (){
             //提交验证 1、验证格式是否正确 2、验证用户是否已经注册
             let formatVerification = that.validatePhone(phoneInputDom.value);
+            console.log(formatVerification,'formatVerification');
             const countryData = countryConfig[that.getCountry()];
             let  originalPhone = phoneInputDom.value;
             let phoneInput = originalPhone;
@@ -200,8 +221,8 @@ let userStatistics = {
         let keReg = /(^\d{9,10}$)/;
         let ngReg = /(^07\d{9}$)|(^7\d{9}$)|(^08\d{9}$)|(^8\d{9}$)|(^09\d{9}$)|(^9\d{9}$)/;
         let ghReg = /[0-9]{9,10}/;
-        // var {data: {country}} = this;
-        switch ('ke') {
+        var country = this.getCountry();
+        switch (country) {
             case 'ke':
                 return keReg.test(phone);
             case 'ug':

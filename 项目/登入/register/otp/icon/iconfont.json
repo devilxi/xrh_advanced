@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "17959467",
+      "name": "Icon_Dial USSD_32",
+      "font_class": "Icon_DialUSSD_321",
+      "unicode": "e6ce",
+      "unicode_decimal": 59086
+    },
+    {
       "icon_id": "17735533",
       "name": "Icon_Text SMS_32",
       "font_class": "Icon_TextSMS_32",

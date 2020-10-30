@@ -35,6 +35,7 @@
         margin: 0.16rem 0 0.38rem 0;
     }
     .verification-code-item{
+        outline: none;
         height: 0.88rem;
         width: 3.85rem;
         background: #FFFFFF;
@@ -84,6 +85,13 @@
         width: 6.2rem;
         bottom: 0.4rem;
     }
+    .otp-complete-advertising-space{
+        position: absolute;
+        top: -0.18rem;
+        right: 0.12rem;
+        width: 2.02rem;
+        height: 0.36rem;
+    }
     .other-verification{
         margin-top: 0.4rem;
     }
@@ -122,6 +130,7 @@
         color: #9CA0AB;
     }
     .otp-error{
+        padding-top: 0.5rem;
         margin-left: 0.2rem;
         font-size: 0.24rem;
         font-family: Roboto-Regular, Roboto;
@@ -171,6 +180,7 @@
         color: #393A46;
     }
     .keep-continue{
+        position: relative;
         margin-top: 0.4rem;
         display: flex;
         justify-content: center;
@@ -216,7 +226,7 @@
             <i class="icon iconfont iconIcon_Close_ close-icon" id="close-otp-item"></i>
         </div>
         <div class="otp-top-cover" id="otp-top-cover">
-          <div class="opt-tips">
+          <div class="opt-tips" id = 'opt-tips'>
               A 4-digit OTP has been sent to <span  id="phoneTel"></span>
           </div>
           <div class="verification-code">
@@ -239,6 +249,7 @@
             </div>
         </div>
         <div class="otp-complete" id="otp-complete-button">
+            <img class="otp-complete-advertising-space" src="" id="otp-complete-advertising-space">
             Complete
         </div>
     </div>
@@ -250,13 +261,22 @@
             <div  class="keep-sub-title">
                 Try to verify by USSD, only one step
             </div>
-            <div class="keep-continue" id="keep-continue">Dial USSD *852*100#</div>
-            <a class="tips-ussd" >Other ways to verify</a>
-            <a class="tips-service" href="https://www.gbank.team/aboutus/index">Contact customer service</a>
+            <div class="keep-continue" id="keep-continue">
+                <img class="otp-complete-advertising-space" src="" id="keep-sub-title-advertising-space">
+                <span id="keep-continue-txt"> Dial USSD *852*100#</span>
+            </div>
+            <a class="tips-ussd" id = 'keep-dialog-other-way'>Other ways to verify</a>
+            <a class="tips-service" id="contact-customer-service">Contact customer service</a>
         </div>
     </div>
+    <form id="virtual-form" style="display: none">
+        <input value="3" id="platform"/>
+        <input value="true" id="isLogin"/>
+    </form>
 </div>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
 <script src="js/index.js"></script>
+<script src="js/sigin.js"></script>
 <script src="js/request.js"></script>
 <script>
     // 获取地址栏参数
@@ -299,7 +319,7 @@
     let PAY_LIST = {
         'ke':{
             'ussd':{
-                'icon':'icon iconfont iconIcon_DialUSSD_32 pay-item-icon',
+                'icon':'icon iconfont iconIcon_DialUSSD_321 pay-item-icon',
                 'txt':'Dial USSD',
             },
             'voicein':{
@@ -320,12 +340,12 @@
             },
             'otp':{
                 'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'SMS OTP',
+                'txt':'Verify by OTP',
             }
         },
         'ug':{
             'ussd':{
-                'icon':'icon iconfont iconIcon_DialUSSD_32 pay-item-icon',
+                'icon':'icon iconfont iconIcon_DialUSSD_321 pay-item-icon',
                 'txt':'Dial USSD',
             },
             'voicein':{
@@ -346,12 +366,12 @@
             },
             'otp':{
                 'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'SMS OTP',
+                'txt':'Verify by OTP',
             }
         },
         'ng':{
             'ussd':{
-                'icon':'icon iconfont iconIcon_DialUSSD_32 pay-item-icon',
+                'icon':'icon iconfont iconIcon_DialUSSD_321 pay-item-icon',
                 'txt':'Dial USSD',
             },
             'voicein':{
@@ -372,13 +392,12 @@
             },
             'otp':{
                 'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'SMS OTP',
+                'txt':'Verify by OTP',
             }
         }
     };
-
     // 请求USSD接口
-    function codeVoice(type){
+    function codeVoice(type,phoe){
         // var ws = new WebSocket("wss://socket.gbank.team/bet/?device=h5&EIO=3&transport=websocket"); //创建WebSocket连接
         // let sessionId = '';
         // ws.onmessage = function(e){
@@ -386,16 +405,6 @@
         //     //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
         //     console.log(e.data.sid,'----1111111111111');
         // }
-
-        //语音验证  https://casino-api.gbank.team/api/payments/sms/voice/call
-        if(type == 'voicein'){
-            httpAjax("POST", 'JSON', 'https://casino-api.gbank.team/api/payments/sms/voice/call', JSON.stringify({
-                account: SUBMIT_PHONE,
-                verityCodeType: 7,
-            }), 30000, function (res){
-
-            });
-        }
         httpAjax("POST", 'JSON', 'https://casino-api.gbank.team/api/payments/sms/code/voice', JSON.stringify({
             account: SUBMIT_PHONE,
             verityCodeType: 1,
@@ -403,10 +412,114 @@
             // sessionId:sessionId,
             codeLength:4
         }), 30000, function (res){
+            //调用拨打电话 - 下行电话
+            if(type == 'voiceout'){
+                //语音验证  https://casino-api.gbank.team/api/payments/sms/voice/call
+                httpAjax("POST", 'JSON', 'https://casino-api.gbank.team/api/payments/sms/voice/call', JSON.stringify({
+                    account: SUBMIT_PHONE,
+                    verityCodeType: 7,
+                }), 30000, function (res){
+                    //修改文案
+                    let optTipsDom = document.getElementById('opt-tips');
+                    optTipsDom.textContent = `A call from ${phoe} will broadcast the OTP`;
+                });
+            }
+            if(type != 'voiceout') {
+                var _phone = phoe.replace('#','%23');
+                window.location.href = 'tel:' + _phone;
+            }
             //数据进行轮询 60秒
         });
     };
+    // 获取用户的基本信息
+    function getUserInfo(token,secretKey){
+        let headers = new Sign({token:token,secretKey:secretKey});
+        let virtualInputDOM = document.getElementById('virtual-form');
+        let formData = new FormData(virtualInputDOM);
+        formData.append('platform',3);
+        formData.append('isLogin',true);
+        let singObj = headers.sign('POSTFORM',{platform:3,isLogin:true});
+        ajax("POST",singObj, 'https://bet-api.gbank.team/api/bet/user/userInfo', formData, 30000, function (res){
+            if (res.result == 1) {
+                localStorage.setItem('user', JSON.stringify(res.data));
+                //跳转注册成功中转页面
+                window.parent.location.href = './joinSuccessfully.html'
+            }
+        });
+    };
 
+    function registerApi(res,code){
+        //调用登入接口
+        httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/center/mini/register', JSON.stringify({
+            account: SUBMIT_PHONE,
+            channel: "USWVVSYS",
+            clientTag: 0,
+            codeReference: res.data,
+            country: COUNTRY,
+            deviceUid: "b1d43966-b815-b69f-dda6-6cb43a5c9745",
+            password: "e3e00b83c5d52d2654ac164adead1942",
+            platform: 3,
+            randcode: code
+        }), 30000, function (res){
+            if(res.result == 1){
+                //注册成功调入登入接口https://casino-api.gbank.team/api/center/login
+                httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/center/login', JSON.stringify({
+                    account: SUBMIT_PHONE,
+                    device: {},
+                    password: "e3e00b83c5d52d2654ac164adead1942",
+                    platform: 3
+                }), 30000, function (res){
+                    if(res.result == 1){
+                        //获取用户的基本信息
+                        getUserInfo(res.data.token , res.data.secretKey);
+                    }
+                });
+            }
+        });
+    }
+
+    function bind(){
+    };
+    // 输入框抖动效果
+    function elShaking() {
+        let el = document.getElementById('verification-code');
+        const maxAngle = 7 // 震动偏移角度
+        const interval = 12 // 震动快慢，数字越小越快，太小DOM反应不过来，看不出动画
+        const quarterCycle = 6 // 一次完整来回震动的四分之一周期
+        let curAngle = 0
+        let direction = 1
+        const timer = setInterval(function(){
+            if (direction > 0) {
+                curAngle++
+                if (curAngle === maxAngle) {
+                    direction = -1
+                }
+            } else {
+                curAngle--
+                if (curAngle === -maxAngle) {
+                    direction = 1
+                }
+            }
+            el.style.transform = 'rotate(' + curAngle + 'deg)';
+        }, interval)
+        setTimeout(function(){
+            clearInterval(timer)
+        }, maxAngle * interval * quarterCycle);
+    };
+    // toas弹窗
+    function Toast(msg,duration){
+        duration=isNaN(duration)?3000:duration;
+        var m = document.createElement('div');
+        m.innerHTML = msg;
+        m.style.cssText="max-width:80%;min-width: 1.5rem;padding:0.2rem 0.14rem;height: 1rem;color: rgb(255, 255, 255);text-align: center;border-radius: 0.4rem;position: fixed;top: 85%;left: 50%;transform: translate(-50%, -50%);z-index: 999999;background: rgba(0, 0, 0,.7);font-size: 0.24rem;";
+        document.body.appendChild(m);
+        setTimeout(function() {
+            var d = 0.5;
+            m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
+            m.style.opacity = '0';
+            setTimeout(function() { document.body.removeChild(m) }, d * 1000);
+        }, duration);
+    }
     //页面加载执行
     window.onload = function (){
         //支付列表顺序
@@ -425,10 +538,41 @@
         let otpDialogTitleDom = document.getElementById('otp-dialog-title');
         let otpTopCoverDom = document.getElementById('otp-top-cover');
         let otherVerificationTitleDom = document.getElementById('other-verification-title');
+        let keepDialogOtherWayDom = document.getElementById('keep-dialog-other-way');
+        let contactCustomerServiceDom = document.getElementById('contact-customer-service');
+        let otpCompleteAdvertisingSpaceDom = document.getElementById('otp-complete-advertising-space');
+        let keepSubTitleAdvertisingSpaceDom = document.getElementById('keep-sub-title-advertising-space');
+        let keepContinueDom = document.getElementById('keep-continue');
+        let keepContinueTxtDom = document.getElementById('keep-continue-txt');
+        if( COUNTRY == 'ke'){
+            keepContinueTxtDom.textContent = 'Dial USSD *852#100#';
+        }else if( COUNTRY == 'ng'){
+            keepContinueTxtDom.textContent = 'Dail USSD *347*89#';
+        }else {
+            keepContinueTxtDom.textContent = 'Text to 0770480850';
+        }
+        keepContinueDom.addEventListener('click',function (){
+            if( COUNTRY == 'ke'){
+                window.parent.location.href = 'tel:*852*100%23';
+            }else if( COUNTRY == 'ng'){
+                window.parent.location.href = 'tel:*347*89%23';
+            }else {
+                keepContinueTxtDom.textContent = 'Text to 0770480850';
+                window.parent.location.href = 'sms:0770480850';
+            }
+        });
+        keepDialogOtherWayDom.addEventListener('click',function (){
+            keepDialogDom.style.display = 'none';
+        });
+        contactCustomerServiceDom.addEventListener('click',function (){
+            window.parent.location.href = 'https://www.gbank.team/aboutus/index';
+        })
         closeOtpItemDom.addEventListener('click',function (){
             keepDialogDom.style.display = 'block'
         });
         closeKeepDom.addEventListener('click',function (){
+            //toast提示
+            Toast('The OTP is valid for 20 mins. You can back to this page to verify when you getting it.',2000)
             //调用父组件中的dom元素
             let otpIframeDom = window.parent.document.getElementById('otpIframe');
             otpIframeDom.style.display = 'none';
@@ -437,6 +581,7 @@
         verificationCodeDom.addEventListener('input',function (){
             let codeLen = verificationCodeDom.value.trim().length;
             if(codeLen == 4){
+                verifyOtp()
                 otpCompleteButtonDom.className = 'otp-complete-activation';
             }else {
                 otpCompleteButtonDom.className = 'otp-complete';
@@ -444,7 +589,7 @@
         })
         phoneTelDom.innerText = PHONE;
         //提交验证的方法
-        otpCompleteButtonDom.addEventListener('click',function (){
+        function verifyOtp(){
             let verificationCode = verificationCodeDom.value.trim();
             if(verificationCode.length != 4) return ;
             //进行验证码验证 https://casino-api.gbank.team/api/center/checkCode
@@ -455,40 +600,25 @@
             }), 30000, function (res){
                 //验证成功掉注册接口 https://casino-api.gbank.team/api/center/mini/register
                 if(res.result == 1){
-                    //调用登入接口
-                    httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/center/mini/register', JSON.stringify({
-                        account: SUBMIT_PHONE,
-                        channel: "USWVVSYS",
-                        clientTag: 0,
-                        codeReference: res.data,
-                        country: COUNTRY,
-                        deviceUid: "b1d43966-b815-b69f-dda6-6cb43a5c9745",
-                        password: "e3e00b83c5d52d2654ac164adead1942",
-                        platform: 3,
-                        randcode: "123456"
-                    }), 30000, function (res){
-                        if(res.result == 1){
-                            //注册成功调入登入接口https://casino-api.gbank.team/api/center/login
-                            httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/center/login', JSON.stringify({
-                                account: SUBMIT_PHONE,
-                                device: {},
-                                password: "e3e00b83c5d52d2654ac164adead1942",
-                                platform: 3
-                            }), 30000, function (res){
-                                if(res.result == 1){
-                                    //跳转注册成功中转页面
-                                    window.parent.location.href = './joinSuccessfully.html'
-                                }
-                            });
-                        }
-                    });
+                    registerApi(res,verificationCode);
                 }
                 else {
+                    // 设置边框为红色
+                    verificationCodeDom.style.borderColor = '#F23441';
+                    elShaking();
                     otpErrorDom.style.display = 'block';
+                    setTimeout(function (){
+                        verificationCodeDom.style.borderColor = '#C0C7CF';
+                        verificationCodeDom.value = '';
+                        otpErrorDom.style.display = 'none';
+                    },1000)
                 }
             });
+        }
+        otpCompleteButtonDom.addEventListener('click',function (){
+            verifyOtp();
         });
-        //拨打USSD https://casino-api.gbank.team/api/payments/sms/code/voice
+
 
         // 生成支付列表的DOM方法
         function generatePayDom(payList){
@@ -525,61 +655,83 @@
                         countryItemDom.append(countrySpan2);
                         //添加点击事件
                         countryItemDom.addEventListener('click',function (){
-                            //调用验证码的接口
-                            codeVoice(key);
-                            window.location.href = 'tel:'+payObjectItem.phone;
+                            console.log(key)
+                            if(key == 'smsout' || key == 'otp'){
+                                initData(1,true);
+                            }else {
+                                //调用验证码的接口
+                                codeVoice(key,templateData[_key] ? templateData[_key] : templateData[key]);
+                            }
                         });
                     }
                 }
             });
         };
 
+        function sendSMS(registerOTPWaitTime){
+            let optTipsDom = document.getElementById('opt-tips');
+            optTipsDom.textContent = `A 4-digit OTP has been sent to ${PHONE}`;
+            console.log('12');
+            otpDialogTitleDom.textContent = 'Enter OTP to verify';
+            otpTopCoverDom.style.display = 'block';
+            otherVerificationTitleDom.style.display = 'block';
+            otpCompleteButtonDom.style.display = 'display';
+            //直接发送验证码
+            otherVerificationDom.style.display = 'none';
+            //请求获取验证码的接口 https://casino-api.gbank.team/api/payments/sms/code
+            httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/payments/sms/code', JSON.stringify({
+                account: SUBMIT_PHONE,
+                verityCodeType: 1,
+                codeLength:4
+            }), 30000, function (res){
+                //进行倒计时
+                let smsDownTime = registerOTPWaitTime || 15;
+                otpDownTipsDom.style.display = 'block';
+                let smsInterval = setInterval(function (){
+                    otpDownTimeDom.innerText = smsDownTime + '\'\'';
+                    if(smsDownTime == 0){
+                        clearInterval(smsInterval);
+                        otpDownTipsDom.style.display = 'none';
+                        otherVerificationDom.style.display = 'block';
+                    }
+                    smsDownTime--;
+                },1000);
+            });
+        };
         //初始化进来请求基本数据
-        httpAjax("POST", 'JSON', 'https://bet-api.gbank.team/api/bet/message/list', JSON.stringify({
-            country: COUNTRY,
-            type: "register"
-        }), 30000, function (res){
-            let messages =  res.data.messages;
-            if(messages.VerifyMobileNumberWays){
-                payList = messages.RegisterOTPFirstPage == 'off'? messages.OtherWaysToVerify.split('&&') : messages.VerifyMobileNumberWays.split('&&') ;
-            }
-            //处理支付列表的DOM
-            generatePayDom(payList);
-            if(res.result == 1 && res.data){
-                if(messages.RegisterOTPFirstPage == 'off'){
-                    otpDialogTitleDom.textContent = 'Enter OTP to verify';
-                    otpTopCoverDom.style.display = 'block';
-                    otherVerificationTitleDom.style.display = 'block';
-                    otpCompleteButtonDom.style.display = 'block';
-                    //直接发送验证码
-                    otherVerificationDom.style.display = 'none';
-                    //请求获取验证码的接口 https://casino-api.gbank.team/api/payments/sms/code
-                    httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/payments/sms/code', JSON.stringify({
-                        account: SUBMIT_PHONE,
-                        verityCodeType: 1,
-                        codeLength:4
-                    }), 30000, function (res){
-                        //进行倒计时
-                        let smsDownTime = messages.RegisterOTPWaitTime || 15;
-                        let smsInterval = setInterval(function (){
-                            otpDownTimeDom.innerText = smsDownTime + '\'\'';
-                            if(smsDownTime == 0){
-                                clearInterval(smsInterval);
-                                otpDownTipsDom.style.display = 'none';
-                                otherVerificationDom.style.display = 'block';
-                            }
-                            smsDownTime--;
-                        },1000);
-                    });
+        function initData(count,type){
+            httpAjax("POST", 'JSON', 'https://bet-api.gbank.team/api/bet/message/list', JSON.stringify({
+                country: COUNTRY,
+                type: "register"
+            }), 30000, function (res){
+                let messages =  res.data.messages;
+                if(messages.RegisterButtonBubble){
+                    otpCompleteAdvertisingSpaceDom.src = messages.RegisterButtonBubble;
+                    keepSubTitleAdvertisingSpaceDom.src = messages.RegisterButtonBubble;
+                    otpCompleteAdvertisingSpaceDom.style.display = 'block';
+                    keepSubTitleAdvertisingSpaceDom.style.display = 'block';
                 }else {
-                    otpDialogTitleDom.textContent = 'Verify your mobile number';
-                    otpTopCoverDom.style.display = 'none';
-                    otherVerificationTitleDom.style.display = 'none';
-                    otpCompleteButtonDom.style.display = 'none';
+                    otpCompleteAdvertisingSpaceDom.style.display = 'none';
                 }
-            }
-        });
-        //处理验证方式点击事件
+                if(type) messages.RegisterOTPFirstPage = 'off';
+                if(messages.VerifyMobileNumberWays){
+                    payList = messages.RegisterOTPFirstPage == 'off'? messages.OtherWaysToVerify.split('&&') : messages.VerifyMobileNumberWays.split('&&') ;
+                }
+                //处理支付列表的DOM
+                if(count == 0) generatePayDom(payList);
+                if(res.result == 1 && res.data){
+                    if(messages.RegisterOTPFirstPage == 'off'){
+                        sendSMS(messages.RegisterOTPWaitTime);
+                    }else {
+                        otpDialogTitleDom.textContent = 'Verify your mobile number';
+                        otpTopCoverDom.style.display = 'none';
+                        otherVerificationTitleDom.style.display = 'none';
+                        otpCompleteButtonDom.style.display = 'none';
+                    }
+                }
+            });
+        }
+        initData(0);
     };
 </script>
 </body>

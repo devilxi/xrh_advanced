@@ -68,6 +68,7 @@
             align-items: center;
         }
         .count-down-txt{
+            display: flex;
             font-size: 0.3rem;
             font-family: Roboto-Regular, Roboto;
             font-weight: 400;
@@ -81,26 +82,73 @@
             font-size: 0.36rem;
             color: #F2F3F5;
         }
+        .down-time{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgb( 50,51,61);
+            margin-left: 0.2rem;
+            width: 0.48rem;
+            height: 0.48rem;
+            background: #FFE60F;
+            border-radius: 0.04rem;
+        }
     </style>
 </head>
 <body>
 <div>
     <div class="top">
-        <i class="icon iconfont iconIcon_Close_ close-icon"></i>
+        <i class="icon iconfont iconIcon_Close_ close-icon" id="join-success-close"></i>
     </div>
     <div class="title">
         <i class="icon iconfont iconIcon_Success_128 success-icon"></i>
        <span class="title-txt"> Join Successfully</span>
     </div>
     <div class="img">
-        <img src="./images/ke.png">
+        <img id="join-successfully-ad">
     </div>
     <div class="count-down">
-        <div class="count-down-txt">Deal ends in</div>
+        <div class="count-down-txt">
+            Deal ends in
+            <div class="down-time" id="down-time-minute"></div>
+            <div class="down-time" id="down-time-second"></div>
+        </div>
     </div>
     <div class="deposit">DEPOSIT 49 TO GET</div>
     <a class="back-to-home" href="https://www.gbank.team/">Back to home>></a>
 </div>
+<script src="js/request.js"></script>
 <script src="js/index.js"></script>
+<script>
+    window.onload = function (){
+        let downTimeMinuteDom = document.getElementById('down-time-minute');
+        let downTimeSecondDom = document.getElementById('down-time-second');
+        //获取配置文件
+        httpAjax("POST", 'JSON', 'https://bet-api.gbank.team/api/bet/message/list', JSON.stringify({
+            country: 'ke',
+            type: "register"
+        }), 30000, function (res){
+            if(res && res.result == 1){
+                console.log(  res.data.messages,' res.data.messages.RegisterUndertakeAd');
+                let registerUndertakeAdLsit = res.data.messages.RegisterUndertakeAd.split('&&');
+                let joinSuccessfullyAdDom = document.getElementById('join-successfully-ad');
+                joinSuccessfullyAdDom.src = registerUndertakeAdLsit[1];
+                let downTime = registerUndertakeAdLsit[0];
+                let downsetInterval = setInterval(function (){
+                    downTimeMinuteDom.innerText = Math.floor(downTime/60) % 60;
+                    downTimeSecondDom.innerText = downTime % 60 ;
+                    downTime--;
+                    if(downTime == 0){
+                        clearInterval(downsetInterval);
+                    }
+                },1000)
+            }
+        });
+        let joinSuccessCloseDom = document.getElementById('join-success-close');
+        joinSuccessCloseDom.addEventListener('click',function (){
+            window.location.href = 'https://www.gbank.team/';
+        })
+    }
+</script>
 </body>
 </html>

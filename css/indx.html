@@ -1,3 +1,49 @@
-<html>
-213
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box{
+            background-color: red;
+            width: 600px;
+            margin: 0 auto;
+            margin-top: 200px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+<div class="box" id="box"></div>
+<script>
+    document.getElementById('box').addEventListener('mouseenter',function(e){
+        elShaking(document.getElementById('box'))
+    })
+    function elShaking(el) {
+        const maxAngle = 7 // 震动偏移角度
+        const interval = 12 // 震动快慢，数字越小越快，太小DOM反应不过来，看不出动画
+        const quarterCycle = 6 // 一次完整来回震动的四分之一周期
+        let curAngle = 0
+        let direction = 1
+        const timer = setInterval(function(){
+            if (direction > 0) {
+                curAngle++
+                if (curAngle === maxAngle) {
+                    direction = -1
+                }
+            } else {
+                curAngle--
+                if (curAngle === -maxAngle) {
+                    direction = 1
+                }
+            }
+            el.style.transform = 'rotate(' + curAngle + 'deg)';
+        }, interval)
+        setTimeout(function(){
+            clearInterval(timer)
+        }, maxAngle * interval * quarterCycle);
+    }
+</script>
+</body>
 </html>
