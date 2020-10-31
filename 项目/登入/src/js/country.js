@@ -57,11 +57,13 @@ function processingCountry(){
         let countryItemDom = document.getElementById('country-item-' + item.name);
         //创建图片
         let countryImg = document.createElement('img');
+        countryImg.id = 'country-item-img-' + item.name;
         countryImg.src=item.img;
         countryItemDom.append(countryImg);
         //创建span
         let countrySpan = document.createElement('span');
         countrySpan.className = 'country-item-title';
+        countrySpan.id = 'country-item-img-title-' + item.name;
         countrySpan.textContent =item.name;
         countryItemDom.append(countrySpan);
     }
@@ -69,18 +71,16 @@ function processingCountry(){
     countryItemContainerDOM.addEventListener('click',function (e){
         let id = e.target.id;
         console.log(id)
-        if(id === 'country-item-Uganda'){
+        if(id === 'country-item-Uganda' || id === 'country-item-img-Uganda' || id === 'country-item-img-title-Uganda'){
             //乌干达
             window.localStorage['country'] = 1;
 
-        }else if(id === 'country-item-Nigeria'){
+        }else if(id === 'country-item-Nigeria' || id === 'country-item-img-Nigeria' || id === 'country-item-img-title-Nigeria'){
             //尼日利亚
             window.localStorage['country'] = 2;
-            location.reload();
         }else {
             //肯尼亚
             window.localStorage['country'] = 0;
-            location.reload();
         }
         location.reload();
         let countryDialogDom = document.getElementById('country-dialog');

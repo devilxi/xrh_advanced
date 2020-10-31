@@ -217,6 +217,11 @@
         /*background-color: #ffffff;*/
         /*width: 100%;*/
     }
+    .arrow-icon{
+        font-size: 0.32rem;
+        color: #ADB0BB;
+        margin-left: 0.16rem;
+    }
 </style>
 <body>
 <div class="otp-dialog" id="otp-dialog">
@@ -661,6 +666,10 @@
                         countrySpan2.className = 'pay-item-more';
                         countrySpan2.textContent = templateData[_key] ? templateData[_key] : templateData[key];
                         countryItemDom.append(countrySpan2);
+                        //箭头
+                        let arrowIcon = document.createElement('i');
+                        arrowIcon.className = 'icon iconfont iconIcon_more_ arrow-icon';
+                        countryItemDom.append(arrowIcon);
                         //添加点击事件
                         countryItemDom.addEventListener('click',function (){
                             if(key == 'smsout' || key == 'otp'){
