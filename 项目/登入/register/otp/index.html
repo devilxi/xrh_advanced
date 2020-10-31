@@ -230,7 +230,7 @@
               A 4-digit OTP has been sent to <span  id="phoneTel"></span>
           </div>
           <div class="verification-code">
-              <input class="verification-code-item" maxlength="4" id="verification-code"/>
+              <input class="verification-code-item" id="verification-code" type="number"/>
               <span class="otp-error" id="otp-error">OTP is incorrect</span>
           </div>
           <div class="otp-down" id="otp-down-tips">
@@ -441,6 +441,8 @@
         let singObj = headers.sign('POSTFORM',{platform:3,isLogin:true});
         ajax("POST",singObj, 'https://bet-api.gbank.team/api/bet/user/userInfo', formData, 30000, function (res){
             if (res.result == 1) {
+                res.data.isLogin = true;
+                res.data.secretKey = secretKey;
                 localStorage.setItem('user', JSON.stringify(res.data));
                 //跳转注册成功中转页面
                 window.parent.location.href = './joinSuccessfully.html'
@@ -508,16 +510,17 @@
     };
     // toas弹窗
     function Toast(msg,duration){
+        console.log('11111111111111111');
         duration=isNaN(duration)?3000:duration;
         var m = document.createElement('div');
         m.innerHTML = msg;
-        m.style.cssText="max-width:80%;min-width: 1.5rem;padding:0.2rem 0.14rem;height: 1rem;color: rgb(255, 255, 255);text-align: center;border-radius: 0.4rem;position: fixed;top: 85%;left: 50%;transform: translate(-50%, -50%);z-index: 999999;background: rgba(0, 0, 0,.7);font-size: 0.24rem;";
+        m.style.cssText="max-width:80%;min-width: 1.5rem;padding:0.2rem 0.14rem;height: 1rem;color: rgb(255, 255, 255);text-align: center;border-radius: 0.4rem;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);z-index: 999999;background: rgba(0, 0, 0,.7);font-size: 0.24rem;";
         document.body.appendChild(m);
         setTimeout(function() {
             var d = 0.5;
             m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
-            m.style.opacity = '0';
-            setTimeout(function() { document.body.removeChild(m) }, d * 1000);
+            // m.style.opacity = '0';
+            // setTimeout(function() { document.body.removeChild(m) }, d * 1000);
         }, duration);
     }
     //页面加载执行
@@ -545,7 +548,7 @@
         let keepContinueDom = document.getElementById('keep-continue');
         let keepContinueTxtDom = document.getElementById('keep-continue-txt');
         if( COUNTRY == 'ke'){
-            keepContinueTxtDom.textContent = 'Dial USSD *852#100#';
+            keepContinueTxtDom.textContent = 'Dial USSD *852*100#';
         }else if( COUNTRY == 'ng'){
             keepContinueTxtDom.textContent = 'Dail USSD *347*89#';
         }else {
@@ -558,7 +561,7 @@
                 window.parent.location.href = 'tel:*347*89%23';
             }else {
                 keepContinueTxtDom.textContent = 'Text to 0770480850';
-                window.parent.location.href = 'sms:0770480850';
+                window.parent.location.href = 'sms:0770480850?body=Bangbet verification';
             }
         });
         keepDialogOtherWayDom.addEventListener('click',function (){
@@ -574,12 +577,17 @@
             //toast提示
             Toast('The OTP is valid for 20 mins. You can back to this page to verify when you getting it.',2000)
             //调用父组件中的dom元素
-            let otpIframeDom = window.parent.document.getElementById('otpIframe');
-            otpIframeDom.style.display = 'none';
+            setTimeout(function (){
+                let otpIframeDom = window.parent.document.getElementById('otpIframe');
+                otpIframeDom.style.display = 'none';
+            },500)
         })
         verificationCodeDom.focus();
-        verificationCodeDom.addEventListener('input',function (){
+        verificationCodeDom.addEventListener('input',function (e){
             let codeLen = verificationCodeDom.value.trim().length;
+            if(codeLen > 4) {
+                console.log(e)
+            }
             if(codeLen == 4){
                 verifyOtp()
                 otpCompleteButtonDom.className = 'otp-complete-activation';
@@ -611,7 +619,7 @@
                         verificationCodeDom.style.borderColor = '#C0C7CF';
                         verificationCodeDom.value = '';
                         otpErrorDom.style.display = 'none';
-                    },1000)
+                    },2000)
                 }
             });
         }
@@ -655,7 +663,6 @@
                         countryItemDom.append(countrySpan2);
                         //添加点击事件
                         countryItemDom.addEventListener('click',function (){
-                            console.log(key)
                             if(key == 'smsout' || key == 'otp'){
                                 initData(1,true);
                             }else {
@@ -671,7 +678,6 @@
         function sendSMS(registerOTPWaitTime){
             let optTipsDom = document.getElementById('opt-tips');
             optTipsDom.textContent = `A 4-digit OTP has been sent to ${PHONE}`;
-            console.log('12');
             otpDialogTitleDom.textContent = 'Enter OTP to verify';
             otpTopCoverDom.style.display = 'block';
             otherVerificationTitleDom.style.display = 'block';

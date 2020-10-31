@@ -192,7 +192,6 @@ let userStatistics = {
         formSubmitDOM.addEventListener('click',function (){
             //提交验证 1、验证格式是否正确 2、验证用户是否已经注册
             let formatVerification = that.validatePhone(phoneInputDom.value);
-            console.log(formatVerification,'formatVerification');
             const countryData = countryConfig[that.getCountry()];
             let  originalPhone = phoneInputDom.value;
             let phoneInput = originalPhone;

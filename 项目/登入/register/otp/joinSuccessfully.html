@@ -90,8 +90,86 @@
             margin-left: 0.2rem;
             width: 0.48rem;
             height: 0.48rem;
-            background: #FFE60F;
+            background: rgba(255,230,15,0.5);
             border-radius: 0.04rem;
+            font-size: 0.26rem;
+        }
+        .keep-dialog{
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+        .keep-dialog-cover {
+            width: 90%;
+            background: #FFFFFF;
+            border-radius: 0.1rem;
+            box-sizing: border-box;
+            padding: 0.6rem 0.48rem 0.4rem;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .pay-dialog-item{
+            display: flex;
+            height: 0.6rem;
+            align-items: center;
+        }
+        .pay-dialog-item-name{
+            font-size: 0.24rem;
+            font-family: Roboto-Regular, Roboto;
+            font-weight: 400;
+            color: #393A46;
+        }
+        .pay-dialog-item-value{
+            margin-left: 1.8rem;
+            font-size: 0.24rem;
+            font-family: Roboto-Bold, Roboto;
+            font-weight: bold;
+            color: #393A46;
+        }
+        .pay-dialog-item-copy{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: auto;
+            width: 1.03rem;
+            height: 0.4rem;
+            background: #F2F3F5;
+            border-radius: 0.04rem;
+            border: 0.02rem solid #F2F3F5;
+            font-size: 0.24rem;
+            font-family: Roboto-Regular, Roboto;
+            font-weight: 400;
+            color: #10A310;
+        }
+        .completed-button{
+            display: flex;
+            margin-top: 0.4rem;
+            justify-content: center;
+            align-items: center;
+            height: 0.88rem;
+            background: #10A310;
+            border-radius: 0.08rem;
+            font-size: 0.32rem;
+            font-family: ArialMT;
+            color: #FFFFFF;
+        }
+        .pay-close-icon{
+            position: absolute;
+            top: 0.2rem;
+            right: 0.24rem;
+            color:#F2F3F5;
+        }
+        .ug-fail-txt{
+            font-size: 0.24rem;
+            font-family: Roboto-Regular, Roboto;
+            font-weight: 400;
+            color: #393A46;
         }
     </style>
 </head>
@@ -108,24 +186,152 @@
         <img id="join-successfully-ad">
     </div>
     <div class="count-down">
-        <div class="count-down-txt">
+        <div class="count-down-txt" id="count-down-deposit">
             Deal ends in
             <div class="down-time" id="down-time-minute"></div>
             <div class="down-time" id="down-time-second"></div>
         </div>
     </div>
-    <div class="deposit">DEPOSIT 49 TO GET</div>
-    <a class="back-to-home" href="https://www.gbank.team/">Back to home>></a>
+    <div class="deposit" id="deposit-button"></div>
+    <a class="back-to-home" href="https://www.gbank.team/">Back to home></a>
+    <!--    肯尼亚充值失败弹窗-->
+    <div class="keep-dialog" id="pay-fail-dialog">
+        <div class="keep-dialog-cover">
+            <i class="icon iconfont iconIcon_Close_ pay-close-icon" id="close-pay-item"></i>
+            <div class="pay-dialog-item">
+                <div class="pay-dialog-item-name">M-Pesa Paybill</div>
+                <div class="pay-dialog-item-value">999880</div>
+                <div class="pay-dialog-item-copy">Copy</div>
+            </div>
+            <div class="pay-dialog-item">
+                <div class="pay-dialog-item-name">Airtel Paybill</div>
+                <div class="pay-dialog-item-value">BANGBET</div>
+                <div class="pay-dialog-item-copy">Copy</div>
+            </div>
+            <div class="completed-button" id="completed-button-payment" onclick="closePayItemDomFn()">
+                I've completed the payment
+            </div>
+        </div>
+    </div>
+
+    <!--    乌干达充值失败弹窗-->
+    <div class="keep-dialog" id="ug-pay-fail-dialog">
+        <div class="keep-dialog-cover">
+<!--            <i class="icon iconfont iconIcon_Close_ pay-close-icon" id="close-pay-item"></i>-->
+           <div class="ug-fail-txt" id="ug-fail-txt"></div>
+            <div class="completed-button" id="ug-completed-button-payment">
+               ok
+            </div>
+        </div>
+    </div>
 </div>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script src="js/sigin.js"></script>
 <script src="js/request.js"></script>
 <script src="js/index.js"></script>
 <script>
+    //获取国家信息
+    function getCountry(){
+        //获取缓存中的国家数值
+        let countryCode =  window.localStorage.getItem('country');
+        if(countryCode == 2){
+            return 'ng';
+        }else if(countryCode == 1){
+            return 'ug';
+        }else {
+            return 'ke';
+        }
+    };
+    //获取userInfo信息
+    function getUserInfo(){
+        let userInfo = window.localStorage['user'];
+        return JSON.parse(userInfo);
+    };
+    //肯尼亚充值
+    function  mpesa(){
+        let userInfo = getUserInfo();
+        let token = userInfo.token;
+        let secretKey = userInfo.secretKey;
+        let signParameters = new Sign({token:token,secretKey:secretKey});
+        let singObj = signParameters.sign('POSTJSON',{amount:49,platform:3});
+        ajax("POST",singObj, 'https://casino-api.gbank.team/api/payments/mpesa/onlinePay', JSON.stringify({
+            amount: 49,
+            platform: 3
+        }), 30000, function (res){
+            if (res.result == 1) {
+                //充值成功
+                window.location.href = 'https://www.gbank.team/';
+            }else {
+                //充值失败
+                let payFailDialogDom = document.getElementById('pay-fail-dialog');
+                payFailDialogDom.style.display = 'block';
+            }
+        });
+    };
+    //乌干达充值
+    function payments(){
+        let userInfo = getUserInfo();
+        let token = userInfo.token;
+        let secretKey = userInfo.secretKey;
+        let signParameters = new Sign({token:token,secretKey:secretKey});
+        let singObj = signParameters.sign('POSTJSON',{amount:1000,platform:3});
+        ajax("POST",singObj, 'https://casino-api.gbank.team/api/payments/yo/deposit', JSON.stringify({
+            amount: 1000,
+            platform: 3
+        }), 30000, function (res){
+            if (res.result == 1) {
+                //充值成功
+                window.location.href = 'https://www.gbank.team/';
+            }else {
+                //充值失败
+                let ugFailTxtDom = document.getElementById('ug-fail-txt');
+                ugFailTxtDom.textContent = res.info;
+                let ugPayDailDialogDom = document.getElementById('ug-pay-fail-dialog');
+                ugPayDailDialogDom.style.display = 'block';
+                let ugCompletedButtonPaymentDom = document.getElementById('ug-completed-button-payment');
+                ugCompletedButtonPaymentDom.addEventListener('click',function (){
+                    ugPayDailDialogDom.style.display = 'none';
+                })
+            }
+        });
+    };
+
+    function closePayItemDomFn(){
+        let payFailDialogDom = document.getElementById('pay-fail-dialog');
+        payFailDialogDom.style.display = 'none';
+    };
     window.onload = function (){
         let downTimeMinuteDom = document.getElementById('down-time-minute');
         let downTimeSecondDom = document.getElementById('down-time-second');
+        let depositButtonDom = document.getElementById('deposit-button');
+        let countDownDepositDom = document.getElementById('count-down-deposit');
+        let payFailDialogDom = document.getElementById('pay-fail-dialog');
+        let closePayItemDom = document.getElementById('close-pay-item');
+        let completedButtonPaymentDom = document.getElementById('completed-button-payment');
+
+        closePayItemDom.addEventListener('click',function (){
+            payFailDialogDom.style.display = 'none';
+        });
+        if(getCountry() == 'ke'){
+            depositButtonDom.textContent = 'DEPOSIT 49 TO GET';
+            depositButtonDom.addEventListener('click',function (){
+                mpesa();
+            });
+        }else if(getCountry() == 'ng'){
+            depositButtonDom.textContent = 'DEPOSIT 100 TO GET';
+            depositButtonDom.addEventListener('click',function (){
+                window.location.href = "https://www.gbank.team/user/ng-deposit?defmoney=1000&jumptype=empty";
+            });
+        }
+        else {
+            depositButtonDom.textContent = 'DEPOSIT 1000 TO GET';
+            depositButtonDom.addEventListener('click',function (){
+                payments();
+            });
+        }
         //获取配置文件
         httpAjax("POST", 'JSON', 'https://bet-api.gbank.team/api/bet/message/list', JSON.stringify({
-            country: 'ke',
+            country: getCountry(),
             type: "register"
         }), 30000, function (res){
             if(res && res.result == 1){
@@ -134,12 +340,16 @@
                 let joinSuccessfullyAdDom = document.getElementById('join-successfully-ad');
                 joinSuccessfullyAdDom.src = registerUndertakeAdLsit[1];
                 let downTime = registerUndertakeAdLsit[0];
+                let downTime_copy = registerUndertakeAdLsit[0];
                 let downsetInterval = setInterval(function (){
-                    downTimeMinuteDom.innerText = Math.floor(downTime/60) % 60;
-                    downTimeSecondDom.innerText = downTime % 60 ;
+                    let minuteTime = Math.floor(downTime/60) % 60;
+                    downTimeMinuteDom.innerText = minuteTime.toString().length == 2 ? minuteTime+'\'':'0'+minuteTime+'\'';
+                    let secondTime = downTime % 60;
+                    downTimeSecondDom.innerText = secondTime.toString().length == 1 ?  '0'+secondTime+'\'\'':secondTime+'\'\'';
                     downTime--;
                     if(downTime == 0){
-                        clearInterval(downsetInterval);
+                        downTime =  downTime_copy
+                        // clearInterval(downsetInterval);
                     }
                 },1000)
             }
