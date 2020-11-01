@@ -322,83 +322,36 @@
     const SUBMIT_PHONE = COUNTRY_CONFIG[COUNTRY] + _phone;
     //国家支付列表的配置
     let PAY_LIST = {
-        'ke':{
-            'ussd':{
-                'icon':'icon iconfont iconIcon_DialUSSD_321 pay-item-icon',
-                'txt':'Dial USSD',
-            },
-            'voicein':{
-                'icon':'icon iconfont iconIcon_Makecall_32 pay-item-icon',
-                'txt':'Make a call',
-            },
-            'smsin':{
-                'icon':'icon iconfont iconIcon_SMSOTP_32 pay-item-icon',
-                'txt':'Text a SMS',
-            },
-            'voiceout':{
-                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'Voice OTP',
-            },
-            'smsout':{
-                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'SMS OTP',
-            },
-            'otp':{
-                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'Verify by OTP',
-            }
+        //USSD 验证
+        'ussd':{
+            'icon':'icon iconfont iconIcon_DialUSSD_321 pay-item-icon',
+            'txt':'Dial USSD',
         },
-        'ug':{
-            'ussd':{
-                'icon':'icon iconfont iconIcon_DialUSSD_321 pay-item-icon',
-                'txt':'Dial USSD',
-            },
-            'voicein':{
-                'icon':'icon iconfont iconIcon_Makecall_32 pay-item-icon',
-                'txt':'Make a call',
-            },
-            'smsin':{
-                'icon':'icon iconfont iconIcon_SMSOTP_32 pay-item-icon',
-                'txt':'Text a SMS',
-            },
-            'voiceout':{
-                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'Voice OTP',
-            },
-            'smsout':{
-                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'SMS OTP',
-            },
-            'otp':{
-                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'Verify by OTP',
-            }
+        //下行电话
+        'voiceout':{
+            'icon':'icon iconfont iconIcon_VoiceOTP_32 pay-item-icon',
+            'txt':'Voice OTP',
         },
-        'ng':{
-            'ussd':{
-                'icon':'icon iconfont iconIcon_DialUSSD_321 pay-item-icon',
-                'txt':'Dial USSD',
-            },
-            'voicein':{
-                'icon':'icon iconfont iconIcon_Makecall_32 pay-item-icon',
-                'txt':'Make a call',
-            },
-            'smsin':{
-                'icon':'icon iconfont iconIcon_SMSOTP_32 pay-item-icon',
-                'txt':'Text a SMS',
-            },
-            'voiceout':{
-                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'Voice OTP',
-            },
-            'smsout':{
-                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'SMS OTP',
-            },
-            'otp':{
-                'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
-                'txt':'Verify by OTP',
-            }
+        //上行电话
+        'voicein':{
+            'icon':'icon iconfont iconIcon_Makecall_32 pay-item-icon',
+            'txt':'Make a call',
+
+        },
+        //上行短信
+        'smsin':{
+            'icon':'icon iconfont iconIcon_TextSMS_32 pay-item-icon',
+            'txt':'Text a SMS',
+        },
+        //下行短信
+        'smsout':{
+            'icon':'icon iconfont iconIcon_SMSOTP_32 pay-item-icon',
+            'txt':'SMS OTP',
+        },
+        //下行短信
+        'otp':{
+            'icon':'icon iconfont iconIcon_SMSOTP_32 pay-item-icon',
+            'txt':'Verify by OTP',
         }
     };
     // 请求USSD接口
@@ -429,9 +382,12 @@
                     optTipsDom.textContent = `A call from ${phoe} will broadcast the OTP`;
                 });
             }
+            // 下行电话
             if(type != 'voiceout') {
-                var _phone = phoe.replace('#','%23');
-                window.location.href = 'tel:' + _phone;
+                if(phoe){
+                    var _phone = phoe.replace('#','%23');
+                    window.location.href = 'tel:' + _phone;
+                }
             }
             //数据进行轮询 60秒
         });
@@ -591,10 +547,10 @@
         verificationCodeDom.addEventListener('input',function (e){
             let codeLen = verificationCodeDom.value.trim().length;
             if(codeLen > 4) {
-                console.log(e)
+                verificationCodeDom.value = verificationCodeDom.value.split(0,3)
             }
             if(codeLen == 4){
-                verifyOtp()
+                verifyOtp();
                 otpCompleteButtonDom.className = 'otp-complete-activation';
             }else {
                 otpCompleteButtonDom.className = 'otp-complete';
@@ -641,11 +597,12 @@
                 if(res && res.result){
                     let templateData = res.data;
                     let payCoverDom = document.getElementById('pay-cover');
-                    let payObject = PAY_LIST[COUNTRY];
+                    //先清空元素
+                    payCoverDom.innerHTML = "";
                     for (var i = 0 ; i < payList.length ; i++){
                         let _key = payList[i];
                         let key = payList[i].toLocaleLowerCase();
-                        let payObjectItem = payObject[key];
+                        let payObjectItem = PAY_LIST[key];
                         //创建div
                         let countryBox = document.createElement('div');
                         countryBox.className = 'pay-item'
@@ -719,23 +676,27 @@
                 country: COUNTRY,
                 type: "register"
             }), 30000, function (res){
-                let messages =  res.data.messages;
-                if(messages.RegisterButtonBubble){
-                    otpCompleteAdvertisingSpaceDom.src = messages.RegisterButtonBubble;
-                    keepSubTitleAdvertisingSpaceDom.src = messages.RegisterButtonBubble;
-                    otpCompleteAdvertisingSpaceDom.style.display = 'block';
-                    keepSubTitleAdvertisingSpaceDom.style.display = 'block';
-                }else {
-                    otpCompleteAdvertisingSpaceDom.style.display = 'none';
-                }
-                if(type) messages.RegisterOTPFirstPage = 'off';
-                if(messages.VerifyMobileNumberWays){
-                    payList = messages.RegisterOTPFirstPage == 'off'? messages.OtherWaysToVerify.split('&&') : messages.VerifyMobileNumberWays.split('&&') ;
-                }
-                //处理支付列表的DOM
-                if(count == 0) generatePayDom(payList);
                 if(res.result == 1 && res.data){
+                    let messages =  res.data.messages;
+                    //广告位图片配置
+                    if(messages.RegisterButtonBubble){
+                        otpCompleteAdvertisingSpaceDom.src = messages.RegisterButtonBubble;
+                        keepSubTitleAdvertisingSpaceDom.src = messages.RegisterButtonBubble;
+                        otpCompleteAdvertisingSpaceDom.style.display = 'block';
+                        keepSubTitleAdvertisingSpaceDom.style.display = 'block';
+                    }else {
+                        otpCompleteAdvertisingSpaceDom.style.display = 'none';
+                    }
+                    //验证方式开关显示
+                    if(type) messages.RegisterOTPFirstPage = 'off';
+                    if(messages.RegisterOTPFirstPage){
+                        payList = messages.RegisterOTPFirstPage == 'off'? messages.OtherWaysToVerify.split('&&') : messages.VerifyMobileNumberWays.split('&&') ;
+                    }
+                    //处理支付列表的DOM
+                    // if(count == 0)
+                    generatePayDom(payList);
                     if(messages.RegisterOTPFirstPage == 'off'){
+                        otpCompleteButtonDom.style.display = 'flex';
                         sendSMS(messages.RegisterOTPWaitTime);
                     }else {
                         otpDialogTitleDom.textContent = 'Verify your mobile number';
