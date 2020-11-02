@@ -294,6 +294,10 @@
         game:'https://casino-api.gbank.team/api',
         href:'https://www.gbank.team'
     };
+    //是否可以发短信
+    let SENDSMSSTATUS = false;
+    //语音验证倒计时
+    let VOICESTATUS = true;
     // 获取地址栏参数
     function getUrlParam(name) {
         let urlObj = {};
@@ -377,7 +381,7 @@
             account: SUBMIT_PHONE,
             verityCodeType: 1,
             version:2,
-            // sessionId:sessionId,
+            sessionId:'',
             codeLength:4
         }), 30000, function (res){
             //调用拨打电话 - 下行电话
@@ -399,9 +403,23 @@
                     window.location.href = 'tel:' + _phone;
                 }
             }
+            setInterval(function (){
+                // checkResponse();
+            },3000)
             //数据进行轮询 60秒
         });
     };
+
+    //检测是否成功
+    function checkResponse(){
+        var params = new FormData();
+        params.append('account',SUBMIT_PHONE);
+        params.append('verifyCodeType',1);
+        httpAjax("POST",'POSTJSON', API_CONFIG.base + '/bet/verify/code/checkResponse', params, 30000, function (res){
+
+        });
+    }
+
     // 获取用户的基本信息
     function getUserInfo(token,secretKey){
         let headers = new Sign({token:token,secretKey:secretKey});
@@ -420,7 +438,7 @@
             }
         });
     };
-
+    //请求注册的API
     function registerApi(res,code){
         //调用登入接口
         httpAjax("POST",'JSON', API_CONFIG.game + '/center/mini/register', JSON.stringify({
@@ -450,9 +468,6 @@
             }
         });
     }
-
-    function bind(){
-    };
     // 输入框抖动效果
     function elShaking() {
         let el = document.getElementById('verification-code');
@@ -539,7 +554,7 @@
             keepDialogDom.style.display = 'none';
         });
         contactCustomerServiceDom.addEventListener('click',function (){
-            window.parent.location.href = 'https://www.gbank.team/aboutus/index';
+            window.parent.location.href = API_CONFIG.href + '/aboutus/index';
         })
         closeOtpItemDom.addEventListener('click',function (){
             keepDialogDom.style.display = 'block'
@@ -597,12 +612,10 @@
         otpCompleteButtonDom.addEventListener('click',function (){
             verifyOtp();
         });
-
-
         // 生成支付列表的DOM方法
         function generatePayDom(payList){
             //https://bet-api.gbank.team/api/bet/verify/code/template?country=ke
-            httpAjax("GET", 'JSON', API_CONFIG.base + '/bet/verify/code/template?country='+COUNTRY, JSON.stringify({
+            httpAjax("GET", 'JSON', API_CONFIG.base + '/bet/verify/code/template?country='+ COUNTRY, JSON.stringify({
             }), 30000, function (res){
                 if(res && res.result){
                     let templateData = res.data;
@@ -626,6 +639,7 @@
                         //创建文案
                         let countrySpan = document.createElement('span');
                         countrySpan.className = "pay-item-txt";
+                        countrySpan.id = "pay-item-txt-" + key ;
                         countrySpan.textContent = payObjectItem.txt;
                         countryItemDom.append(countrySpan);
                         //创建文案
@@ -640,17 +654,29 @@
                         //添加点击事件
                         countryItemDom.addEventListener('click',function (){
                             if(key == 'smsout' || key == 'otp'){
-                                initData(1,true);
+                                console.log(key);
+                                if(key == 'smsout' && !SENDSMSSTATUS){
+                                }else {
+                                    initData(1,true);
+                                }
                             }else {
-                                //调用验证码的接口
-                                codeVoice(key,templateData[_key] ? templateData[_key] : templateData[key]);
+                                if(key == 'voiceout'){
+                                    if(VOICESTATUS){
+                                        voiceCountDown();
+                                        codeVoice(key,templateData[_key] ? templateData[_key] : templateData[key]);
+                                    }
+                                }
+                                else {
+                                    //调用验证码的接口
+                                    codeVoice(key,templateData[_key] ? templateData[_key] : templateData[key]);
+                                }
                             }
                         });
                     }
                 }
             });
         };
-
+        //发送短信的方法
         function sendSMS(registerOTPWaitTime){
             let optTipsDom = document.getElementById('opt-tips');
             optTipsDom.textContent = `A 4-digit OTP has been sent to ${PHONE}`;
@@ -663,15 +689,20 @@
             //请求获取验证码的接口 https://casino-api.gbank.team/api/payments/sms/code
             httpAjax("POST",'JSON', API_CONFIG.game +  '/payments/sms/code', JSON.stringify({
                 account: SUBMIT_PHONE,
+                sessionId: "",
                 verityCodeType: 1,
+                version: 2,
                 codeLength:4
             }), 30000, function (res){
                 //进行倒计时
                 let smsDownTime = registerOTPWaitTime || 15;
+                let _smsDownTime =smsDownTime;
                 otpDownTipsDom.style.display = 'block';
                 let smsInterval = setInterval(function (){
                     otpDownTimeDom.innerText = smsDownTime + '\'\'';
                     if(smsDownTime == 0){
+                        //处理倒计时
+                        smsCountDown(_smsDownTime);
                         clearInterval(smsInterval);
                         otpDownTipsDom.style.display = 'none';
                         otherVerificationDom.style.display = 'block';
@@ -680,6 +711,44 @@
                 },1000);
             });
         };
+        //处理发送短信倒计时
+        function smsCountDown(time){
+            SENDSMSSTATUS = false;
+            //获取DOM元素
+            let payItemTxtDom = document.getElementById('pay-item-txt-smsout');
+            payItemTxtDom.style.color = '#9CA0AB';
+            let payItemTxtName = payItemTxtDom.textContent;
+            let smsDownTime = 60 - Number(time);
+            let smsCountDown =  setInterval(function (){
+                payItemTxtDom.textContent = payItemTxtName+ ' ' + smsDownTime + '\'\'';
+                if(smsDownTime == 0){
+                    SENDSMSSTATUS = true;
+                    payItemTxtDom.style.color = '#32333D';
+                    payItemTxtDom.textContent = payItemTxtName;
+                    clearInterval(smsCountDown);
+                }
+                smsDownTime--;
+            },1000);
+        }
+        //语音验证倒计时
+        function voiceCountDown(){
+            VOICESTATUS = false;
+            //获取DOM元素
+            let payItemTxtVoiceoutDom = document.getElementById('pay-item-txt-voiceout');
+            payItemTxtVoiceoutDom.style.color = '#9CA0AB';
+            let payItemTxtVoiceoutName = payItemTxtVoiceoutDom.textContent;
+            let voiceDownTime = 60 ;
+            let voiceCountDown =  setInterval(function (){
+                payItemTxtVoiceoutDom.textContent = payItemTxtVoiceoutName + ' ' + voiceDownTime + '\'\'';
+                if(voiceDownTime == 0){
+                    VOICESTATUS = true;
+                    payItemTxtVoiceoutDom.style.color = '#32333D';
+                    payItemTxtVoiceoutDom.textContent = payItemTxtVoiceoutName;
+                    clearInterval(voiceCountDown);
+                }
+                voiceDownTime--;
+            },1000);
+        }
         //初始化进来请求基本数据
         function initData(count,type){
             httpAjax("POST", 'JSON', API_CONFIG.base + '/bet/message/list', JSON.stringify({
@@ -703,7 +772,6 @@
                         payList = messages.RegisterOTPFirstPage == 'off'? messages.OtherWaysToVerify.split('&&') : messages.VerifyMobileNumberWays.split('&&') ;
                     }
                     //处理支付列表的DOM
-                    // if(count == 0)
                     generatePayDom(payList);
                     if(messages.RegisterOTPFirstPage == 'off'){
                         otpCompleteButtonDom.style.display = 'flex';
@@ -716,9 +784,25 @@
                     }
                 }
             });
-        }
+        };
+        //初始化数据
         initData(0);
     };
+</script>
+<script>
+    var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+    window.addEventListener('resize',function (){
+        var nowClientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+        var otpCompleteButtonDom = document.getElementById('otp-complete-button');
+        if (clientHeight > nowClientHeight) {
+            //键盘弹出的事件处理
+            otpCompleteButtonDom.style.position = '';
+        }
+        else {
+            //键盘收起的事件处理
+            otpCompleteButtonDom.style.position = 'fixed';
+        }
+    })
 </script>
 </body>
 </html>

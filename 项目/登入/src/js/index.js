@@ -17,6 +17,11 @@ const RETENTION_CONFIG = {
         'title':'Abandon WELCOME BONUS?',
     },
 }
+const API_CONFIG ={
+    base:'https://bet-api.gbank.team/api',
+    game:'https://casino-api.gbank.team/api',
+    href:'https://www.gbank.team'
+};
 let userStatistics = {
     data: {
         buttonAvailable: false,
@@ -37,7 +42,7 @@ let userStatistics = {
         params.append('showPosition','retain');
         params.append('country',country);
         //获取挽留弹窗的提示数据 https://bet-api.gbank.team/api/bet/activity/list
-        request("POST", 'POSTJSON', 'https://bet-api.gbank.team/api/bet/activity/list', params, 30000, function (res){
+        request("POST", 'POSTJSON', API_CONFIG.base + '/bet/activity/list', params, 30000, function (res){
             let keepTitleDom = document.getElementById('keep-title');
             let keepSubTitleDom = document.getElementById('keep-sub-title')
             keepTitleDom.textContent = RETENTION_CONFIG[country].title;
@@ -45,7 +50,7 @@ let userStatistics = {
                 keepSubTitleDom.textContent = res.data[0].subject;
             }
         });
-        request("POST", 'JSON', 'https://bet-api.gbank.team/api/bet/message/list', JSON.stringify({
+        request("POST", 'JSON', API_CONFIG.base + '/bet/message/list', JSON.stringify({
             country: country,
             type: "register"
         }), 30000, function (res){
@@ -147,7 +152,7 @@ let userStatistics = {
         });
         closeKeepDom.addEventListener('click',function (){
             keepDialogDom.style.display= 'none';
-            window.location.href = 'https://www.gbank.team/';
+            window.location.href = API_CONFIG.href;
         });
         keepContinueDom.addEventListener('click',function (){
             keepDialogDom.style.display= 'none';
@@ -202,7 +207,7 @@ let userStatistics = {
             var params = new FormData(subFormDom);
             params.append('phone',phone);
             if(formatVerification){
-                request("POST",'POSTJSON', 'https://bet-api.gbank.team/api/bet/user/checkUserIsExist', params, 30000, function (res){
+                request("POST",'POSTJSON', API_CONFIG.base + '/bet/user/checkUserIsExist', params, 30000, function (res){
                     //判断用户是否已经注册
                     if(res.result === 1){
                         otpIframeDomSrc.src = './otp/index.html?phone=' + originalPhone + '&country=' + that.getCountry();

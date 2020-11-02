@@ -16,14 +16,6 @@ let phoneLabelDom = document.getElementById('phoneLabel');
 let phoneInputDom = document.getElementById('phoneInput');
 // 初始化国家
 function  initCountry() {
-    // 为了节约资源不请求接口，进行配置枚举
-    // request("GET", 'JSON','https://bet-api.gbank.team/api/bet/system/info?channel=h5', JSON.stringify({channel:'h5'}), 30000, function (res){
-    //     if(res && res.result == 1){
-    //         countryList = res.data;
-    //         //处理国家DOM选择元素
-    //         processingCountry();
-    //     }
-    // });
     for (let item in countryConfig){
         console.log(item);
     }
