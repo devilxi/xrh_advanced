@@ -12,8 +12,8 @@
         width: 100%;
         background: #FFFFFF;
         box-sizing: border-box;
-        padding: 0.48rem 0.48rem 0.4rem;
-        margin-bottom: 1rem;
+        padding: 0.32rem 0.32rem 0 0.32rem;
+        margin-bottom: 1.2rem;
     }
     .otp-dialog-title{
         display: flex;
@@ -67,7 +67,7 @@
         font-weight: 400;
         color: #A7B6C7;
         position: fixed;
-        width: 6.2rem;
+        width: 6.5rem;
         bottom: 0.4rem;
     }
     .otp-complete-activation{
@@ -399,8 +399,12 @@
             // 下行电话
             if(type != 'voiceout') {
                 if(phoe){
-                    var _phone = phoe.replace('#','%23');
-                    window.location.href = 'tel:' + _phone;
+                    if(type == 'smsin'){
+                        window.location.href =  'sms:' + phoe +'?body=Bangbet verification';
+                    }else {
+                        var _phone = phoe.replace('#','%23');
+                        window.location.href = 'tel:' + _phone;
+                    }
                 }
             }
             setInterval(function (){
@@ -566,6 +570,10 @@
             setTimeout(function (){
                 let otpIframeDom = window.parent.document.getElementById('otpIframe');
                 otpIframeDom.style.display = 'none';
+
+
+
+
             },500)
         })
         verificationCodeDom.focus();
@@ -645,7 +653,17 @@
                         //创建文案
                         let countrySpan2 = document.createElement('span');
                         countrySpan2.className = 'pay-item-more';
-                        countrySpan2.textContent = templateData[_key] ? templateData[_key] : templateData[key];
+                        let phoneTxt = templateData[_key] ? templateData[_key] : templateData[key];
+                        if(key == 'voicein'){
+                            phoneTxt = 'to ' + phoneTxt;
+                        }
+                        if(key == 'smsin'){
+                            phoneTxt = 'to ' + phoneTxt;
+                        }
+                        if(key == 'voiceout'){
+                            phoneTxt = 'from ' + phoneTxt;
+                        }
+                        countrySpan2.textContent = phoneTxt;
                         countryItemDom.append(countrySpan2);
                         //箭头
                         let arrowIcon = document.createElement('i');
@@ -787,22 +805,27 @@
         };
         //初始化数据
         initData(0);
+
+        var clientHeight =  document.body.clientHeight;
+        window.addEventListener('resize',function (){
+            var nowClientHeight =  document.body.clientHeight;
+            var otpIframeDom = window.parent.document.getElementById('otpIframeDom');
+            console.log(otpIframeDom);
+            if (clientHeight > nowClientHeight) {
+                //键盘弹出的事件处理
+                otpIframeDom.style.height = '100%';
+            }
+            else {
+                //键盘收起的事件处理
+                otpIframeDom.style.height = '55%';
+            }
+        })
+
+
     };
 </script>
 <script>
-    var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-    window.addEventListener('resize',function (){
-        var nowClientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-        var otpCompleteButtonDom = document.getElementById('otp-complete-button');
-        if (clientHeight > nowClientHeight) {
-            //键盘弹出的事件处理
-            otpCompleteButtonDom.style.position = '';
-        }
-        else {
-            //键盘收起的事件处理
-            otpCompleteButtonDom.style.position = 'fixed';
-        }
-    })
+
 </script>
 </body>
 </html>
