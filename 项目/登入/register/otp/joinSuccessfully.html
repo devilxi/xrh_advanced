@@ -234,6 +234,22 @@
             margin-top:0.2rem;
             margin-bottom:0.7rem;
         }
+        .ke-padding-title{
+            font-size: 0.38rem;
+            font-family: Roboto-Bold, Roboto;
+            font-weight: bold;
+            color: #393a46;
+            line-height: 0.48rem;
+        }
+        .ke-padding-info{
+            font-size: 0.28rem;
+            font-family: Roboto-Regular, Roboto;
+            font-weight: 400;
+            color: #424250;
+            line-height: 0.4rem;
+            margin-top: 0.2rem;
+            margin-bottom: 0.4rem;
+        }
     </style>
 </head>
 <body>
@@ -308,6 +324,19 @@
         </div>
     </div>
 
+    <!--  肯尼亚等待充值  -->
+    <div class="keep-dialog" id="ke-pay-padding-dialog">
+        <div class="keep-dialog-cover">
+            <div class="ke-padding-title" id="ke-padding-txt">Deposit Being Procceed</div>
+            <div class="ke-padding-info">
+                Your deposit request has been submitted, awaiting for confirmation. You
+                can check the deposit records in a short while.
+            </div>
+            <div class="completed-button" id="ke-completed-button-payment">
+                ok
+            </div>
+        </div>
+    </div>
 </div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
 <script src="js/sigin.js"></script>
@@ -338,6 +367,8 @@
     };
     //肯尼亚充值
     function  mpesa(){
+        let kePayPaddingDialogDom = document.getElementById('ke-pay-padding-dialog');
+        kePayPaddingDialogDom.style.display = 'block';
         let userInfo = getUserInfo();
         let token = userInfo.token;
         let secretKey = userInfo.secretKey;
@@ -347,6 +378,7 @@
             amount: 49,
             platform: 3
         }), 30000, function (res){
+            kePayPaddingDialogDom.style.display = 'block';
             if (res.result == 1) {
                 //充值成功
                 let amountDialogDom = document.getElementById('amount-dialog');
@@ -399,6 +431,11 @@
         let closePayItemDom = document.getElementById('close-pay-item');
         let completedButtonPaymentDom = document.getElementById('completed-button-payment');
         let btnGroupSuccessDom = document.getElementById('btn-group-success');
+        let keCompletedButtonPaymentDom = document.getElementById('ke-completed-button-payment');
+        let kePayPaddingDialogDom = document.getElementById('ke-pay-padding-dialog');
+        keCompletedButtonPaymentDom.addEventListener('click',function (){
+            kePayPaddingDialogDom.style.display = 'none';
+        })
         btnGroupSuccessDom.addEventListener('click',function (){
             window.location.href = API_CONFIG.href;
         })
