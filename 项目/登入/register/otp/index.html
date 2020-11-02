@@ -289,6 +289,11 @@
 <script src="js/sigin.js"></script>
 <script src="js/request.js"></script>
 <script>
+    const API_CONFIG ={
+        base:'https://bet-api.gbank.team/api',
+        game:'https://casino-api.gbank.team/api',
+        href:'https://www.gbank.team'
+    };
     // 获取地址栏参数
     function getUrlParam(name) {
         let urlObj = {};
@@ -368,7 +373,7 @@
         //     //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
         //     console.log(e.data.sid,'----1111111111111');
         // }
-        httpAjax("POST", 'JSON', 'https://casino-api.gbank.team/api/payments/sms/code/voice', JSON.stringify({
+        httpAjax("POST", 'JSON', API_CONFIG.game + '/payments/sms/code/voice', JSON.stringify({
             account: SUBMIT_PHONE,
             verityCodeType: 1,
             version:2,
@@ -378,7 +383,7 @@
             //调用拨打电话 - 下行电话
             if(type == 'voiceout'){
                 //语音验证  https://casino-api.gbank.team/api/payments/sms/voice/call
-                httpAjax("POST", 'JSON', 'https://casino-api.gbank.team/api/payments/sms/voice/call', JSON.stringify({
+                httpAjax("POST", 'JSON', API_CONFIG.game + '/payments/sms/voice/call', JSON.stringify({
                     account: SUBMIT_PHONE,
                     verityCodeType: 7,
                 }), 30000, function (res){
@@ -405,7 +410,7 @@
         formData.append('platform',3);
         formData.append('isLogin',true);
         let singObj = headers.sign('POSTFORM',{platform:3,isLogin:true});
-        ajax("POST",singObj, 'https://bet-api.gbank.team/api/bet/user/userInfo', formData, 30000, function (res){
+        ajax("POST",singObj, API_CONFIG.base+'/bet/user/userInfo', formData, 30000, function (res){
             if (res.result == 1) {
                 res.data.isLogin = true;
                 res.data.secretKey = secretKey;
@@ -418,7 +423,7 @@
 
     function registerApi(res,code){
         //调用登入接口
-        httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/center/mini/register', JSON.stringify({
+        httpAjax("POST",'JSON', API_CONFIG.game + '/center/mini/register', JSON.stringify({
             account: SUBMIT_PHONE,
             channel: "USWVVSYS",
             clientTag: 0,
@@ -431,7 +436,7 @@
         }), 30000, function (res){
             if(res.result == 1){
                 //注册成功调入登入接口https://casino-api.gbank.team/api/center/login
-                httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/center/login', JSON.stringify({
+                httpAjax("POST",'JSON', API_CONFIG.game + '/center/login', JSON.stringify({
                     account: SUBMIT_PHONE,
                     device: {},
                     password: "e3e00b83c5d52d2654ac164adead1942",
@@ -567,7 +572,7 @@
             let verificationCode = verificationCodeDom.value.trim();
             if(verificationCode.length != 4) return ;
             //进行验证码验证 https://casino-api.gbank.team/api/center/checkCode
-            httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/center/checkCode', JSON.stringify({
+            httpAjax("POST",'JSON', API_CONFIG.game +  '/center/checkCode', JSON.stringify({
                 account: SUBMIT_PHONE,
                 code: verificationCode,
                 verityCodeType: 1
@@ -597,7 +602,7 @@
         // 生成支付列表的DOM方法
         function generatePayDom(payList){
             //https://bet-api.gbank.team/api/bet/verify/code/template?country=ke
-            httpAjax("GET", 'JSON', 'https://bet-api.gbank.team/api/bet/verify/code/template?country='+COUNTRY, JSON.stringify({
+            httpAjax("GET", 'JSON', API_CONFIG.base + '/bet/verify/code/template?country='+COUNTRY, JSON.stringify({
             }), 30000, function (res){
                 if(res && res.result){
                     let templateData = res.data;
@@ -656,7 +661,7 @@
             //直接发送验证码
             otherVerificationDom.style.display = 'none';
             //请求获取验证码的接口 https://casino-api.gbank.team/api/payments/sms/code
-            httpAjax("POST",'JSON', 'https://casino-api.gbank.team/api/payments/sms/code', JSON.stringify({
+            httpAjax("POST",'JSON', API_CONFIG.game +  '/payments/sms/code', JSON.stringify({
                 account: SUBMIT_PHONE,
                 verityCodeType: 1,
                 codeLength:4
@@ -677,7 +682,7 @@
         };
         //初始化进来请求基本数据
         function initData(count,type){
-            httpAjax("POST", 'JSON', 'https://bet-api.gbank.team/api/bet/message/list', JSON.stringify({
+            httpAjax("POST", 'JSON', API_CONFIG.base + '/bet/message/list', JSON.stringify({
                 country: COUNTRY,
                 type: "register"
             }), 30000, function (res){

@@ -1,0 +1,83 @@
+.dialog-content{
+    position: relative;
+    width: 6.26rem;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    box-sizing: border-box;
+    border-radius: 0.1rem;
+}
+.success-tit {
+position:absolute;
+top:-20%;
+width:100%;
+}
+.success-tit img{
+width: 100%;
+display: flex;
+}
+.amount-dialog{
+position:fixed;
+top:0;
+right:0;
+bottom:0;
+left:0;
+background-color:rgba(0,0,0,0.5);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:666;
+}
+.dialog-content.success-cont{
+margin-top:1rem;
+font-size:0.3rem;
+}
+.dialog-content.deposit-success{
+margin-top:0.16rem;
+margin-bottom:0.2rem;
+color:#35B435;
+font-size:0.42rem;
+font-weight:bold;
+font-style:italic
+}
+.btn-group{
+font-size:0.24rem;
+width:1.68rem;
+height:0.76rem;
+margin-top:0.4rem;
+display:flex;
+justify-content:center;
+align-items:center;
+background-color:#449444;
+color:#fff;
+}
+.deposit-remind{
+color:#8F8F8F;
+font-size:0.24rem;
+margin-top:0.2rem;
+margin-bottom:0.7rem;
+}
+
+<div class="amount-dialog" v-if="showsuccessamount">
+    <div class="dialog-content">
+        <div class="success-tit">
+            <img src="./images/depositsend/people-success.png" alt="" class="tit-img">
+        </div>
+        <!--自定义内容-->
+        <div class="content success-cont">
+            <p class="deposit-money">
+                <span>{{depositMessafeList.FirstDepositSill}}</span>
+                <!--额外金额-->
+                extra was
+            </p >
+            <p class="deposit-success">successfully deposited!</p >
+        </div>
+        <!--按钮组-->
+        <div class="btn-group">
+            <div class="btn-confirm" @click.prevent="showsuccessamount=false">OK</div>
+        </div>
+        <p class="deposit-remind">Please check your account balance</p >
+    </div>
+</div>

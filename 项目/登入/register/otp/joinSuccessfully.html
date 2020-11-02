@@ -172,6 +172,68 @@
             font-weight: 400;
             color: #393A46;
         }
+        .dialog-content{
+            position: relative;
+            width: 6.26rem;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            box-sizing: border-box;
+            border-radius: 0.1rem;
+        }
+        .success-tit {
+            position:absolute;
+            top:-20%;
+            width:100%;
+        }
+        .success-tit img{
+            width: 100%;
+            display: flex;
+        }
+        .amount-dialog{
+            position:fixed;
+            top:0;
+            right:0;
+            bottom:0;
+            left:0;
+            background-color:rgba(0,0,0,0.5);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            z-index:666;
+            display: none;
+        }
+        .dialog-content .success-cont{
+            margin-top:1rem;
+            font-size:0.3rem;
+        }
+        .dialog-content .deposit-success{
+            margin-top:0.16rem;
+            margin-bottom:0.2rem;
+            color:#35B435;
+            font-size:0.42rem;
+            font-weight:bold;
+            font-style:italic
+        }
+        .btn-group{
+            font-size:0.24rem;
+            width:1.68rem;
+            height:0.76rem;
+            margin-top:0.4rem;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background-color:#449444;
+            color:#fff;
+        }
+        .deposit-remind{
+            color:#8F8F8F;
+            font-size:0.24rem;
+            margin-top:0.2rem;
+            margin-bottom:0.7rem;
+        }
     </style>
 </head>
 <body>
@@ -218,13 +280,36 @@
     <!--    乌干达充值失败弹窗-->
     <div class="keep-dialog" id="ug-pay-fail-dialog">
         <div class="keep-dialog-cover">
-<!--            <i class="icon iconfont iconIcon_Close_ pay-close-icon" id="close-pay-item"></i>-->
            <div class="ug-fail-txt" id="ug-fail-txt"></div>
             <div class="completed-button" id="ug-completed-button-payment">
                ok
             </div>
         </div>
     </div>
+
+    <!--    肯尼亚充值成功的弹窗-->
+    <div class="amount-dialog" id="amount-dialog">
+        <div class="dialog-content">
+            <div class="success-tit">
+                <img src="./images/people-success.png" alt="" class="tit-img">
+            </div>
+            <!--自定义内容-->
+            <div class="content success-cont">
+                <p class="deposit-money">
+                    <span>49</span>
+                    <!--额外金额-->
+                    extra was
+                </p >
+                <p class="deposit-success">successfully deposited!</p >
+            </div>
+            <!--按钮组-->
+            <div class="btn-group" id="btn-group-success">
+                <div class="btn-confirm" >OK</div>
+            </div>
+            <p class="deposit-remind">Please check your account balance</p >
+        </div>
+    </div>
+
 </div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
 <script src="js/sigin.js"></script>
@@ -261,7 +346,9 @@
         }), 30000, function (res){
             if (res.result == 1) {
                 //充值成功
-                window.location.href = 'https://www.gbank.team/';
+                let amountDialogDom = document.getElementById('amount-dialog');
+                amountDialogDom.style.display = 'flex';
+                // window.location.href = 'https://www.gbank.team/';
             }else {
                 //充值失败
                 let payFailDialogDom = document.getElementById('pay-fail-dialog');
@@ -309,7 +396,10 @@
         let payFailDialogDom = document.getElementById('pay-fail-dialog');
         let closePayItemDom = document.getElementById('close-pay-item');
         let completedButtonPaymentDom = document.getElementById('completed-button-payment');
-
+        let btnGroupSuccessDom = document.getElementById('btn-group-success');
+        btnGroupSuccessDom.addEventListener('click',function (){
+            window.location.href = "https://www.gbank.team/";
+        })
         closePayItemDom.addEventListener('click',function (){
             payFailDialogDom.style.display = 'none';
         });
