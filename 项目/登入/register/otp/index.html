@@ -229,23 +229,25 @@
 <body>
 <div class="otp-dialog" id="otp-dialog">
     <div class="otp-dialog-cover">
-        <div class="otp-dialog-title">
-            <span id="otp-dialog-title">Enter OTP to verify</span>
-            <i class="icon iconfont iconIcon_Close_ close-icon" id="close-otp-item"></i>
+        <div class="otp-dialog-cover-top">
+            <div class="otp-dialog-title">
+                <span id="otp-dialog-title">Enter OTP to verify</span>
+                <i class="icon iconfont iconIcon_Close_ close-icon" id="close-otp-item"></i>
+            </div>
+            <div class="otp-top-cover" id="otp-top-cover">
+                <div class="opt-tips" id = 'opt-tips'>
+                    A 4-digit OTP has been sent to <span  id="phoneTel"></span>
+                </div>
+                <div class="verification-code">
+                    <input class="verification-code-item" id="verification-code" type="number"/>
+                    <span class="otp-error" id="otp-error">OTP is incorrect</span>
+                </div>
+                <div class="otp-down" id="otp-down-tips">
+                    It may take a while to receive OTP. Please wait…
+                    <span id="otp-down-time" style="color: #32333D"></span>
+                </div>
+            </div>
         </div>
-        <div class="otp-top-cover" id="otp-top-cover">
-          <div class="opt-tips" id = 'opt-tips'>
-              A 4-digit OTP has been sent to <span  id="phoneTel"></span>
-          </div>
-          <div class="verification-code">
-              <input class="verification-code-item" id="verification-code" type="number"/>
-              <span class="otp-error" id="otp-error">OTP is incorrect</span>
-          </div>
-          <div class="otp-down" id="otp-down-tips">
-              It may take a while to receive OTP. Please wait…
-              <span id="otp-down-time" style="color: #32333D"></span>
-          </div>
-      </div>
 
         <!--        其余展示列表-->
         <div class="other-verification" id="other-verification">
@@ -273,8 +275,8 @@
                 <img class="otp-complete-advertising-space" src="" id="keep-sub-title-advertising-space">
                 <span id="keep-continue-txt"> Dial USSD *852*100#</span>
             </div>
-            <a class="tips-ussd" id = 'keep-dialog-other-way'>Other ways to verify</a>
-            <a class="tips-service" id="contact-customer-service">Contact customer service</a>
+            <a class="tips-ussd" id = 'keep-dialog-other-way'>● Other ways to verify</a>
+            <a class="tips-service" id="contact-customer-service">● Contact customer service</a>
         </div>
     </div>
     <form id="virtual-form" style="display: none">
