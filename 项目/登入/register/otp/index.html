@@ -17,6 +17,7 @@
     }
     .otp-dialog-title{
         display: flex;
+        align-items: center;
         font-size: 0.32rem;
         font-family: Roboto-Bold, Roboto;
         font-weight: bold;
@@ -100,14 +101,16 @@
         font-family: Roboto-Regular, Roboto;
         font-weight: 400;
         color: #9CA0AB;
+        margin-bottom: 0.14rem;
     }
     .pay-cover{
-
+        -webkit-user-select: none;
+        user-select: none;
     }
     .pay-item{
         display: flex;
         align-items: center;
-        width: 6.56rem;
+        /*width: 6.56rem;*/
         height: 0.88rem;
         border-bottom: 0.02rem solid #F2F3F5;
     }
@@ -261,10 +264,10 @@
     <!--  挽留弹窗-->
     <div class="keep-dialog" id="keep-dialog">
         <div class="keep-dialog-cover">
-            <div class="keep-title">Failed to get OTP</div>
+            <div class="keep-title">Failed to get OTP?</div>
             <i class="icon iconfont iconIcon_Close_ close-otp-icon" id="close-keep"></i>
             <div  class="keep-sub-title">
-                Try to verify by USSD, only one step
+                Try to verify by USSD, only one step!
             </div>
             <div class="keep-continue" id="keep-continue">
                 <img class="otp-complete-advertising-space" src="" id="keep-sub-title-advertising-space">
