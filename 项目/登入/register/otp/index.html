@@ -8,6 +8,9 @@
 </head>
 <link rel="stylesheet" type="text/css" href="./icon/iconfont.css" />
 <style>
+    .otp-dialog{
+        display: none;
+    }
     .otp-dialog-cover{
         width: 100%;
         background: #FFFFFF;
@@ -225,6 +228,42 @@
         color: #ADB0BB;
         margin-left: 0.16rem;
     }
+
+    .loading-cover{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        font-size: 0.24rem;
+        font-family: ArialMT;
+        color: #9CA0AB;
+    }
+    .loading-item {
+        border: .1em solid currentcolor;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        -webkit-animation: 1s bet-loader linear infinite;
+        animation: 1s bet-loader linear infinite;
+        position: relative;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        color: #DEE1E5;
+        vertical-align: middle;
+        pointer-events: none;
+    }
+
+    @keyframes bet-loader {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
 </style>
 <body>
 <div class="otp-dialog" id="otp-dialog">
@@ -273,7 +312,7 @@
             </div>
             <div class="keep-continue" id="keep-continue">
                 <img class="otp-complete-advertising-space" src="" id="keep-sub-title-advertising-space">
-                <span id="keep-continue-txt"> Dial USSD *852*100#</span>
+                <span id="keep-continue-txt"> Dial USSD *852*77#</span>
             </div>
             <a class="tips-ussd" id = 'keep-dialog-other-way'>● Other ways to verify</a>
             <a class="tips-service" id="contact-customer-service">● Contact customer service</a>
@@ -283,6 +322,10 @@
         <input value="3" id="platform"/>
         <input value="true" id="isLogin"/>
     </form>
+</div>
+<div class="loading-cover" id = "loading-cover">
+    <div class="loading-item" :style="styleObj"></div>
+    <div>Loading...</div>
 </div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
 <script src="js/index.js"></script>
@@ -528,6 +571,7 @@
         let closeOtpItemDom = document.getElementById('close-otp-item');
         let keepDialogDom = document.getElementById('keep-dialog');
         let closeKeepDom = document.getElementById('close-keep');
+        let otpDialogDom = document.getElementById('otp-dialog');
         let otpDialogTitleDom = document.getElementById('otp-dialog-title');
         let otpTopCoverDom = document.getElementById('otp-top-cover');
         let otherVerificationTitleDom = document.getElementById('other-verification-title');
@@ -536,19 +580,20 @@
         let otpCompleteAdvertisingSpaceDom = document.getElementById('otp-complete-advertising-space');
         let keepSubTitleAdvertisingSpaceDom = document.getElementById('keep-sub-title-advertising-space');
         let keepContinueDom = document.getElementById('keep-continue');
+        let loadingCoverDom = document.getElementById('loading-cover')
         let keepContinueTxtDom = document.getElementById('keep-continue-txt');
         if( COUNTRY == 'ke'){
-            keepContinueTxtDom.textContent = 'Dial USSD *852*100#';
+            keepContinueTxtDom.textContent = 'Dial USSD *852*77#';
         }else if( COUNTRY == 'ng'){
-            keepContinueTxtDom.textContent = 'Dail USSD *347*89#';
+            keepContinueTxtDom.textContent = 'Dail USSD *347*88#';
         }else {
             keepContinueTxtDom.textContent = 'Text to 0770480850';
         }
         keepContinueDom.addEventListener('click',function (){
             if( COUNTRY == 'ke'){
-                window.parent.location.href = 'tel:*852*100%23';
+                window.parent.location.href = 'tel:*852*77%23';
             }else if( COUNTRY == 'ng'){
-                window.parent.location.href = 'tel:*347*89%23';
+                window.parent.location.href = 'tel:*347*88%23';
             }else {
                 keepContinueTxtDom.textContent = 'Text to 0770480850';
                 window.parent.location.href = 'sms:0770480850?body=Bangbet verification';
@@ -800,12 +845,13 @@
                         otherVerificationTitleDom.style.display = 'none';
                         otpCompleteButtonDom.style.display = 'none';
                     }
+                    otpDialogDom.style.display = 'block';
+                    loadingCoverDom.style.display = 'none';
                 }
             });
         };
         //初始化数据
         initData(0);
-
         var clientHeight =  document.body.clientHeight;
         window.addEventListener('resize',function (){
             var nowClientHeight =  document.body.clientHeight;
@@ -820,8 +866,6 @@
                 otpIframeDom.style.height = '55%';
             }
         })
-
-
     };
 </script>
 <script>
