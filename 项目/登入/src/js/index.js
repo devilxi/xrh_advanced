@@ -18,9 +18,12 @@ const RETENTION_CONFIG = {
     },
 }
 const API_CONFIG ={
-    base:'https://bet-api.gbank.team/api',
-    game:'https://casino-api.gbank.team/api',
-    href:'https://www.gbank.team'
+    // base:'https://bet-api.gbank.team/api',
+    // game:'https://casino-api.gbank.team/api',
+    // href:'https://www.gbank.team'
+    base:'https://bet-apic.bangbet.com',
+    game:'https://casino-apic.bangbet.com',
+    href:'https://www.bangbet.com'
 };
 let userStatistics = {
     data: {

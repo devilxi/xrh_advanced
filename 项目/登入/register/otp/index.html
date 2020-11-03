@@ -333,9 +333,12 @@
 <script src="js/request.js"></script>
 <script>
     const API_CONFIG ={
-        base:'https://bet-api.gbank.team/api',
-        game:'https://casino-api.gbank.team/api',
-        href:'https://www.gbank.team'
+        // base:'https://bet-api.gbank.team/api',
+        // game:'https://casino-api.gbank.team/api',
+        // href:'https://www.gbank.team'
+        base:'https://bet-apic.bangbet.com',
+        game:'https://casino-apic.bangbet.com',
+        href:'https://www.bangbet.com'
     };
     //是否可以发短信
     let SENDSMSSTATUS = false;
@@ -433,6 +436,7 @@
                 httpAjax("POST", 'JSON', API_CONFIG.game + '/payments/sms/voice/call', JSON.stringify({
                     account: SUBMIT_PHONE,
                     verityCodeType: 7,
+                    callNumber:phoe
                 }), 30000, function (res){
                     //修改文案
                     let optTipsDom = document.getElementById('opt-tips');
@@ -852,20 +856,28 @@
         };
         //初始化数据
         initData(0);
-        var clientHeight =  document.body.clientHeight;
-        window.addEventListener('resize',function (){
+        // 防抖
+        function debounce(fn, wait) {
+            var timeout = null;
+            return function() {
+                if(timeout !== null) clearTimeout(timeout);
+                timeout = setTimeout(fn, wait);
+            }
+        }
+        function handle (){
             var nowClientHeight =  document.body.clientHeight;
             var otpIframeDom = window.parent.document.getElementById('otpIframeDom');
-            console.log(otpIframeDom);
             if (clientHeight > nowClientHeight) {
                 //键盘弹出的事件处理
                 otpIframeDom.style.height = '100%';
             }
-            else {
+            else if(nowClientHeight  == clientHeight ) {
                 //键盘收起的事件处理
                 otpIframeDom.style.height = '55%';
             }
-        })
+        }
+        var clientHeight =  document.body.clientHeight;
+        window.addEventListener('resize',debounce(handle, 100));
     };
 </script>
 <script>
