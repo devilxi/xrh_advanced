@@ -151,7 +151,7 @@
         font-size: 0.32rem;
         margin-left: auto;
         font-weight: lighter;
-      }
+    }
     .keep-dialog{
         position: fixed;
         top: 0;
@@ -331,19 +331,22 @@
 <script src="js/index.js"></script>
 <script src="js/sigin.js"></script>
 <script src="js/request.js"></script>
+<!--<script src="./js/toast.js"></script>-->
 <script>
     const API_CONFIG ={
         // base:'https://bet-api.gbank.team/api',
         // game:'https://casino-api.gbank.team/api',
         // href:'https://www.gbank.team'
-        base:'https://bet-apic.bangbet.com',
-        game:'https://casino-apic.bangbet.com',
+        base:'https://bet-apic.bangbet.com/api',
+        game:'https://casino-apic.bangbet.com/api',
         href:'https://www.bangbet.com'
     };
     //是否可以发短信
     let SENDSMSSTATUS = false;
     //语音验证倒计时
     let VOICESTATUS = true;
+    let CheckResponseCount = 30;
+    let PASSWORD = '';
     // 获取地址栏参数
     function getUrlParam(name) {
         let urlObj = {};
@@ -365,6 +368,13 @@
         } else {
             return null;
         }
+    }
+    //设置随机密码
+    function setPassWord(){
+        var pass_word = '';
+        pass_word = Date.now().toString().slice(0,6);
+        pass_word = md5(pass_word);
+        return pass_word;
     }
     //国家区号的基本配置
     const COUNTRY_CONFIG = {
@@ -414,63 +424,6 @@
             'txt':'Verify by OTP',
         }
     };
-    // 请求USSD接口
-    function codeVoice(type,phoe){
-        // var ws = new WebSocket("wss://socket.gbank.team/bet/?device=h5&EIO=3&transport=websocket"); //创建WebSocket连接
-        // let sessionId = '';
-        // ws.onmessage = function(e){
-        //     sessionId = e.data.sid
-        //     //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
-        //     console.log(e.data.sid,'----1111111111111');
-        // }
-        httpAjax("POST", 'JSON', API_CONFIG.game + '/payments/sms/code/voice', JSON.stringify({
-            account: SUBMIT_PHONE,
-            verityCodeType: 1,
-            version:2,
-            sessionId:'',
-            codeLength:4
-        }), 30000, function (res){
-            //调用拨打电话 - 下行电话
-            if(type == 'voiceout'){
-                //语音验证  https://casino-api.gbank.team/api/payments/sms/voice/call
-                httpAjax("POST", 'JSON', API_CONFIG.game + '/payments/sms/voice/call', JSON.stringify({
-                    account: SUBMIT_PHONE,
-                    verityCodeType: 7,
-                    callNumber:phoe
-                }), 30000, function (res){
-                    //修改文案
-                    let optTipsDom = document.getElementById('opt-tips');
-                    optTipsDom.textContent = `A call from ${phoe} will broadcast the OTP`;
-                });
-            }
-            // 下行电话
-            if(type != 'voiceout') {
-                if(phoe){
-                    if(type == 'smsin'){
-                        window.location.href =  'sms:' + phoe +'?body=Bangbet verification';
-                    }else {
-                        var _phone = phoe.replace('#','%23');
-                        window.location.href = 'tel:' + _phone;
-                    }
-                }
-            }
-            setInterval(function (){
-                // checkResponse();
-            },3000)
-            //数据进行轮询 60秒
-        });
-    };
-
-    //检测是否成功
-    function checkResponse(){
-        var params = new FormData();
-        params.append('account',SUBMIT_PHONE);
-        params.append('verifyCodeType',1);
-        httpAjax("POST",'POSTJSON', API_CONFIG.base + '/bet/verify/code/checkResponse', params, 30000, function (res){
-
-        });
-    }
-
     // 获取用户的基本信息
     function getUserInfo(token,secretKey){
         let headers = new Sign({token:token,secretKey:secretKey});
@@ -485,12 +438,15 @@
                 res.data.secretKey = secretKey;
                 localStorage.setItem('user', JSON.stringify(res.data));
                 //跳转注册成功中转页面
-                window.parent.location.href = './joinSuccessfully.html'
+                console.log(COUNTRY,'COUNTRY');
+                window.parent.location.href = './joinSuccessfully.html?country='+COUNTRY;
             }
         });
     };
     //请求注册的API
     function registerApi(res,code){
+        //生成一个随机验证码
+        PASSWORD = setPassWord();
         //调用登入接口
         httpAjax("POST",'JSON', API_CONFIG.game + '/center/mini/register', JSON.stringify({
             account: SUBMIT_PHONE,
@@ -499,7 +455,7 @@
             codeReference: res.data,
             country: COUNTRY,
             deviceUid: "b1d43966-b815-b69f-dda6-6cb43a5c9745",
-            password: "e3e00b83c5d52d2654ac164adead1942",
+            password: PASSWORD,
             platform: 3,
             randcode: code
         }), 30000, function (res){
@@ -508,7 +464,7 @@
                 httpAjax("POST",'JSON', API_CONFIG.game + '/center/login', JSON.stringify({
                     account: SUBMIT_PHONE,
                     device: {},
-                    password: "e3e00b83c5d52d2654ac164adead1942",
+                    password: PASSWORD,
                     platform: 3
                 }), 30000, function (res){
                     if(res.result == 1){
@@ -545,21 +501,6 @@
             clearInterval(timer)
         }, maxAngle * interval * quarterCycle);
     };
-    // toas弹窗
-    function Toast(msg,duration){
-        console.log('11111111111111111');
-        duration=isNaN(duration)?3000:duration;
-        var m = document.createElement('div');
-        m.innerHTML = msg;
-        m.style.cssText="max-width:80%;min-width: 1.5rem;padding:0.2rem 0.14rem;height: 1rem;color: rgb(255, 255, 255);text-align: center;border-radius: 0.4rem;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);z-index: 999999;background: rgba(0, 0, 0,.7);font-size: 0.24rem;";
-        document.body.appendChild(m);
-        setTimeout(function() {
-            var d = 0.5;
-            m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
-            // m.style.opacity = '0';
-            // setTimeout(function() { document.body.removeChild(m) }, d * 1000);
-        }, duration);
-    }
     //页面加载执行
     window.onload = function (){
         //支付列表顺序
@@ -571,6 +512,7 @@
         let otpCompleteButtonDom = document.getElementById('otp-complete-button');
         let phoneTelDom = document.getElementById('phoneTel');
         let verificationCodeDom = document.getElementById('verification-code');
+        verificationCodeDom.focus();
         let otpErrorDom = document.getElementById('otp-error');
         let closeOtpItemDom = document.getElementById('close-otp-item');
         let keepDialogDom = document.getElementById('keep-dialog');
@@ -614,18 +556,13 @@
         });
         closeKeepDom.addEventListener('click',function (){
             //toast提示
-            Toast('The OTP is valid for 20 mins. You can back to this page to verify when you getting it.',2000)
+            // Toast('The OTP is valid for 20 mins. You can back to this page to verify when you getting it.',2000)
             //调用父组件中的dom元素
             setTimeout(function (){
                 let otpIframeDom = window.parent.document.getElementById('otpIframe');
                 otpIframeDom.style.display = 'none';
-
-
-
-
             },500)
         })
-        verificationCodeDom.focus();
         verificationCodeDom.addEventListener('input',function (e){
             let codeLen = verificationCodeDom.value.trim().length;
             if(codeLen > 4) {
@@ -640,13 +577,14 @@
         })
         phoneTelDom.innerText = PHONE;
         //提交验证的方法
-        function verifyOtp(){
+        function verifyOtp(verifyCode){
             let verificationCode = verificationCodeDom.value.trim();
-            if(verificationCode.length != 4) return ;
+            if(verificationCode.length != 4 && !verifyCode) return ;
+            let code = verifyCode ? verifyCode : verificationCode;
             //进行验证码验证 https://casino-api.gbank.team/api/center/checkCode
             httpAjax("POST",'JSON', API_CONFIG.game +  '/center/checkCode', JSON.stringify({
                 account: SUBMIT_PHONE,
-                code: verificationCode,
+                code: code,
                 verityCodeType: 1
             }), 30000, function (res){
                 //验证成功掉注册接口 https://casino-api.gbank.team/api/center/mini/register
@@ -729,6 +667,9 @@
                             }else {
                                 if(key == 'voiceout'){
                                     if(VOICESTATUS){
+                                        console.log('111111111111')
+                                        //toast提示
+                                        // Toast(`A call from ${phoneTxt} will broadcast the OTP.`,2000);
                                         voiceCountDown();
                                         codeVoice(key,templateData[_key] ? templateData[_key] : templateData[key]);
                                     }
@@ -878,6 +819,89 @@
         }
         var clientHeight =  document.body.clientHeight;
         window.addEventListener('resize',debounce(handle, 100));
+
+        // 请求USSD接口
+        function codeVoice(type,phoe){
+            // var ws = new WebSocket("wss://socket.gbank.team/bet/?device=h5&EIO=3&transport=websocket"); //创建WebSocket连接
+            // let sessionId = '';
+            // ws.onmessage = function(e){
+            //     sessionId = e.data.sid
+            //     //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
+            //     console.log(e.data.sid,'----1111111111111');
+            // }
+            if(type == 'ussd'){
+                httpAjax("POST", 'JSON', API_CONFIG.game + '/payments/sms/code/voice', JSON.stringify({
+                    account: SUBMIT_PHONE,
+                    verityCodeType: 1,
+                    version:2,
+                    sessionId:'',
+                    codeLength:4
+                }), 30000, function (res){
+                    var _phone = phoe.replace('#','%23');
+                    window.location.href = 'tel:' + _phone;
+                    //检测接口
+                    checkResponse();
+                });
+            } else {
+                httpAjax("POST", 'JSON', API_CONFIG.game + '/payments/sms/code/voice', JSON.stringify({
+                    account: SUBMIT_PHONE,
+                    verityCodeType: 1,
+                    version:2,
+                    sessionId:'',
+                    codeLength:4
+                }), 30000, function (res){
+                    //调用拨打电话 - 下行电话
+                    if(type == 'voiceout'){
+                        //语音验证  https://casino-api.gbank.team/api/payments/sms/voice/call
+                        httpAjax("POST", 'JSON', API_CONFIG.game + '/payments/sms/voice/call', JSON.stringify({
+                            account: SUBMIT_PHONE,
+                            verityCodeType: 7,
+                            callNumber:phoe
+                        }), 30000, function (res){
+                            //修改文案
+                            let optTipsDom = document.getElementById('opt-tips');
+                            optTipsDom.textContent = `A call from ${phoe} will broadcast the OTP`;
+                            //检测接口
+                            checkResponse();
+                        });
+                    }
+                    // 下行电话
+                    if(type != 'voiceout') {
+                        if(phoe){
+                            if(type == 'smsin'){
+                                window.location.href =  'sms:' + phoe +'?body=Bangbet verification';
+                            }else {
+                                var _phone = phoe.replace('#','%23');
+                                window.location.href = 'tel:' + _phone;
+                            }
+                        }
+                    }
+                });
+            }
+        };
+        //检测是否成功
+        function checkResponse(){
+            if(CheckResponseCount == 0) return ;
+            var params = new FormData();
+            params.append('account',SUBMIT_PHONE);
+            params.append('verifyCodeType',1);
+            httpAjax("POST",'POSTJSON', API_CONFIG.base + '/bet/verify/code/checkResponse', params, 30000, function (res){
+                CheckResponseCount--;
+                if(res.result == 1){
+                    if(res.data.status == 'PENDING'){
+                        setTimeout(function (){
+                            checkResponse();
+                        },2000);
+                    }
+                    else if(res.data.status == 'SUCCESS' && res.data.code){
+                        //调用校验验证码的接口
+                        setTimeout(function (){
+                            verifyOtp(res.data.code);
+                        },100)
+                    }
+                }
+            });
+        }
     };
 </script>
 <script>

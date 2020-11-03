@@ -21,8 +21,8 @@ const API_CONFIG ={
     // base:'https://bet-api.gbank.team/api',
     // game:'https://casino-api.gbank.team/api',
     // href:'https://www.gbank.team'
-    base:'https://bet-apic.bangbet.com',
-    game:'https://casino-apic.bangbet.com',
+    base:'https://bet-apic.bangbet.com/api',
+    game:'https://casino-apic.bangbet.com/api',
     href:'https://www.bangbet.com'
 };
 let userStatistics = {
@@ -39,7 +39,15 @@ let userStatistics = {
         //初始化国家信息
         initCountry();
         //获取配置信息
-        let country = window.localStorage['country'] == 0 ?'ke' : 'ng';
+        let countryStorage = window.localStorage['country'];
+        let country = '';
+        if(countryStorage == 0){
+            country = 'ke';
+        }else if(countryStorage == 1){
+            country = 'ug';
+        }else {
+            country = 'ng';
+        }
         let params = new FormData();
         params.append('platform','h5');
         params.append('showPosition','retain');

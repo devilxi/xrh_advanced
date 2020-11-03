@@ -199,7 +199,6 @@
             bottom:0;
             left:0;
             background-color:rgba(0,0,0,0.5);
-            display:flex;
             justify-content:center;
             align-items:center;
             z-index:666;
@@ -259,7 +258,7 @@
     </div>
     <div class="title">
         <i class="icon iconfont iconIcon_Success_128 success-icon"></i>
-       <span class="title-txt"> Join Successfully</span>
+        <span class="title-txt"> Join Successfully</span>
     </div>
     <div class="img">
         <img id="join-successfully-ad">
@@ -279,8 +278,8 @@
             <i class="icon iconfont iconIcon_Close_ pay-close-icon" id="close-pay-item"></i>
             <div class="pay-dialog-item">
                 <div class="pay-dialog-item-name">M-Pesa Paybill</div>
-                <div class="pay-dialog-item-value">999880</div>
-                <div class="pay-dialog-item-copy">Copy</div>
+                <div class="pay-dialog-item-value" id="pay-dialog-item-value-">999880</div>
+                <div class="pay-dialog-item-copy" id="pay-dialog-item-copy">Copy</div>
             </div>
             <div class="pay-dialog-item">
                 <div class="pay-dialog-item-name">Airtel Paybill</div>
@@ -296,9 +295,9 @@
     <!--    乌干达充值失败弹窗-->
     <div class="keep-dialog" id="ug-pay-fail-dialog">
         <div class="keep-dialog-cover">
-           <div class="ug-fail-txt" id="ug-fail-txt"></div>
+            <div class="ug-fail-txt" id="ug-fail-txt"></div>
             <div class="completed-button" id="ug-completed-button-payment">
-               ok
+                ok
             </div>
         </div>
     </div>
@@ -347,31 +346,52 @@
         // base:'https://bet-api.gbank.team/api',
         // game:'https://casino-api.gbank.team/api',
         // href:'https://www.gbank.team',
-        base:'https://bet-apic.bangbet.com',
-        game:'https://casino-apic.bangbet.com',
+        base:'https://bet-apic.bangbet.com/api',
+        game:'https://casino-apic.bangbet.com/api',
         href:'https://www.bangbet.com'
     };
-    //获取国家信息
-    function getCountry(){
-        //获取缓存中的国家数值
-        let countryCode =  window.localStorage.getItem('country');
-        if(countryCode == 2){
-            return 'ng';
-        }else if(countryCode == 1){
-            return 'ug';
-        }else {
-            return 'ke';
+    // 获取地址栏参数
+    function getUrlParam(name) {
+        let urlObj = {};
+        let hrefArr = window.location.href.split("?");
+        let query = hrefArr.length > 1 ? hrefArr[hrefArr.length - 1] : "";
+        let vars = query.split("&");
+        for (let i = 0; i < vars.length; i++) {
+            let pair = vars[i].split("=");
+            if(pair.length > 1){
+                urlObj[pair[0]] = pair[1];
+            }
         }
-    };
+        return urlObj[name];
+    }
+    //获取国家信息
+    const COUNTRY = getUrlParam('country');
     //获取userInfo信息
     function getUserInfo(){
         let userInfo = window.localStorage['user'];
         return JSON.parse(userInfo);
     };
+    function getUserInfoApi(){
+        let userInfo = getUserInfo();
+        let token = userInfo.token;
+        let secretKey = userInfo.secretKey;
+        let headers = new Sign({token:token,secretKey:secretKey});
+        let formData = new FormData();
+        formData.append('platform',3);
+        formData.append('isLogin',true);
+        let singObj = headers.sign('POSTFORM',{platform:3,isLogin:true});
+        ajax("POST",singObj, API_CONFIG.base+'/bet/user/userInfo', formData, 30000, function (res){
+            if (res.result == 1 && res.data.balance) {
+                let amountDialogDom = document.getElementById('amount-dialog');
+                let payFailDialogDom = document.getElementById('pay-fail-dialog');
+                payFailDialogDom.style.display = 'none';
+                amountDialogDom.style.display = 'flex';
+            }
+        });
+    }
     //肯尼亚充值
     function  mpesa(){
         let kePayPaddingDialogDom = document.getElementById('ke-pay-padding-dialog');
-        kePayPaddingDialogDom.style.display = 'block';
         let userInfo = getUserInfo();
         let token = userInfo.token;
         let secretKey = userInfo.secretKey;
@@ -381,15 +401,20 @@
             amount: 49,
             platform: 3
         }), 30000, function (res){
-            kePayPaddingDialogDom.style.display = 'block';
+            let amountDialogDom = document.getElementById('amount-dialog');
+            let payFailDialogDom = document.getElementById('pay-fail-dialog');
             if (res.result == 1) {
                 //充值成功
-                let amountDialogDom = document.getElementById('amount-dialog');
-                amountDialogDom.style.display = 'flex';
+                kePayPaddingDialogDom.style.display = 'block';
+                //三秒后关闭
+                setTimeout(function (){
+                    kePayPaddingDialogDom.style.display = 'none';
+                    getUserInfoApi();
+                },3000)
             }else {
                 //充值失败
-                let payFailDialogDom = document.getElementById('pay-fail-dialog');
                 payFailDialogDom.style.display = 'block';
+                amountDialogDom.style.display = 'none';
             }
         });
     };
@@ -420,11 +445,26 @@
             }
         });
     };
-
+    //关闭弹窗
     function closePayItemDomFn(){
         let payFailDialogDom = document.getElementById('pay-fail-dialog');
         payFailDialogDom.style.display = 'none';
     };
+    //上报注册信息
+    function reportRegister(){
+        let params = new FormData();
+        params.append('subject','register');
+        let userInfo = getUserInfo();
+        let token = userInfo.token;
+        let secretKey = userInfo.secretKey;
+        let signParameters = new Sign({token:token,secretKey:secretKey});
+        let singObj = signParameters.sign('POSTFORM',{subject:'register'});
+        ajax("POST",singObj, API_CONFIG.base + '/bet/view/log', params, 30000, function (res){
+            //跳转首页
+            window.location.href = API_CONFIG.href;
+        });
+    }
+    //页面加载完成处理
     window.onload = function (){
         let downTimeMinuteDom = document.getElementById('down-time-minute');
         let downTimeSecondDom = document.getElementById('down-time-second');
@@ -445,15 +485,15 @@
         closePayItemDom.addEventListener('click',function (){
             payFailDialogDom.style.display = 'none';
         });
-        if(getCountry() == 'ke'){
+        if(COUNTRY == 'ke'){
             depositButtonDom.textContent = 'DEPOSIT 49 TO GET';
             depositButtonDom.addEventListener('click',function (){
                 mpesa();
             });
-        }else if(getCountry() == 'ng'){
+        }else if(COUNTRY == 'ng'){
             depositButtonDom.textContent = 'DEPOSIT 100 TO GET';
             depositButtonDom.addEventListener('click',function (){
-                window.location.href = API_CONFIG.href + "/user/ng-deposit?defmoney=1000&jumptype=empty";
+                window.location.href = API_CONFIG.href + "/user/ng-deposit?defmoney=100&jumptype=empty";
             });
         }
         else {
@@ -464,7 +504,7 @@
         }
         //获取配置文件
         httpAjax("POST", 'JSON', API_CONFIG.base + '/bet/message/list', JSON.stringify({
-            country: getCountry(),
+            country: COUNTRY,
             type: "register"
         }), 30000, function (res){
             if(res && res.result == 1){
@@ -489,8 +529,15 @@
         });
         let joinSuccessCloseDom = document.getElementById('join-success-close');
         joinSuccessCloseDom.addEventListener('click',function (){
-            window.location.href = API_CONFIG.href;
+            reportRegister();
         })
+        // copy复制功能
+        // function copyUrl() {
+        //     var Url = document.getElementById("test");
+        //     Url.select();
+        //     document.execCommand("Copy");
+        //     alert("已复制好，可贴粘。");
+        // }
     }
 </script>
 </body>
