@@ -230,6 +230,7 @@
     }
 
     .loading-cover{
+        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -239,18 +240,39 @@
         color: #9CA0AB;
     }
     .loading-item {
-        border: .1em solid currentcolor;
+        border: .2em solid currentcolor;
         border-bottom-color: transparent;
         border-radius: 50%;
         -webkit-animation: 1s bet-loader linear infinite;
         animation: 1s bet-loader linear infinite;
         position: relative;
         display: inline-block;
-        width: 20px;
-        height: 20px;
+        width: 0.64rem;
+        height: 0.64rem;
         color: #DEE1E5;
         vertical-align: middle;
         pointer-events: none;
+    }
+    .loading-item-txt{
+        font-size: 0.24rem;
+        font-family: ArialMT;
+        color: #9CA0AB;
+    }
+    .otp-completing {
+        border: .2em solid currentcolor;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        -webkit-animation: 1s bet-loader linear infinite;
+        animation: 1s bet-loader linear infinite;
+        position: relative;
+        display: inline-block;
+        width: 0.4rem;
+        height: 0.4rem;
+        color: #DEE1E5;
+        vertical-align: middle;
+        pointer-events: none;
+        margin-right: 0.4rem;
+        display: none;
     }
 
     @keyframes bet-loader {
@@ -299,6 +321,8 @@
         </div>
         <div class="otp-complete" id="otp-complete-button">
             <img class="otp-complete-advertising-space" src="" id="otp-complete-advertising-space">
+            <!--            加载loading-->
+            <div class="otp-completing" id="otp-completing"></div>
             Complete
         </div>
     </div>
@@ -325,21 +349,21 @@
 </div>
 <div class="loading-cover" id = "loading-cover">
     <div class="loading-item" :style="styleObj"></div>
-    <div>Loading...</div>
+    <div class="loading-item-txt">Loading...</div>
 </div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
 <script src="js/index.js"></script>
 <script src="js/sigin.js"></script>
 <script src="js/request.js"></script>
-<!--<script src="./js/toast.js"></script>-->
+<script src="./js/toast.js"></script>
 <script>
     const API_CONFIG ={
-        // base:'https://bet-api.gbank.team/api',
-        // game:'https://casino-api.gbank.team/api',
-        // href:'https://www.gbank.team'
-        base:'https://bet-apic.bangbet.com/api',
-        game:'https://casino-apic.bangbet.com/api',
-        href:'https://www.bangbet.com'
+        base:'https://bet-api.gbank.team/api',
+        game:'https://casino-api.gbank.team/api',
+        href:'https://www.gbank.team'
+        // base:'https://bet-apic.bangbet.com/api',
+        // game:'https://casino-apic.bangbet.com/api',
+        // href:'https://www.bangbet.com'
     };
     //是否可以发短信
     let SENDSMSSTATUS = false;
@@ -347,6 +371,8 @@
     let VOICESTATUS = true;
     let CheckResponseCount = 30;
     let PASSWORD = '';
+    //按钮是否显示loading提示
+    let isSubmitLoading = false;
     // 获取地址栏参数
     function getUrlParam(name) {
         let urlObj = {};
@@ -372,7 +398,21 @@
     //设置随机密码
     function setPassWord(){
         var pass_word = '';
-        pass_word = Date.now().toString().slice(0,6);
+        let minIndex = getRandom(0,3) ? getRandom(0,3) : 0;
+        let maxIndex = getRandom(9,12) ? getRandom(9,12) : 0;
+        try {
+            //随机获取时间戳的字符串
+            pass_word = Date.now().toString().slice(minIndex,maxIndex);
+            //获取四位数字
+            let letterArray = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m'];
+            let index1 = getRandom(0,23);
+            let index2 = getRandom(0,23);
+            let index3 = getRandom(0,23);
+            let index4 = getRandom(0,23);
+            pass_word = pass_word + index1 + index2 + index3 + index4 + '';
+        }catch{
+            pass_word = Date.now().toString().slice(minIndex,maxIndex);
+        }
         pass_word = md5(pass_word);
         return pass_word;
     }
@@ -512,7 +552,7 @@
         let otpCompleteButtonDom = document.getElementById('otp-complete-button');
         let phoneTelDom = document.getElementById('phoneTel');
         let verificationCodeDom = document.getElementById('verification-code');
-        verificationCodeDom.focus();
+
         let otpErrorDom = document.getElementById('otp-error');
         let closeOtpItemDom = document.getElementById('close-otp-item');
         let keepDialogDom = document.getElementById('keep-dialog');
@@ -528,6 +568,8 @@
         let keepContinueDom = document.getElementById('keep-continue');
         let loadingCoverDom = document.getElementById('loading-cover')
         let keepContinueTxtDom = document.getElementById('keep-continue-txt');
+        //按钮的loading
+        let otpCompletingDom = document.getElementById('otp-completing');
         if( COUNTRY == 'ke'){
             keepContinueTxtDom.textContent = 'Dial USSD *852*77#';
         }else if( COUNTRY == 'ng'){
@@ -556,7 +598,7 @@
         });
         closeKeepDom.addEventListener('click',function (){
             //toast提示
-            // Toast('The OTP is valid for 20 mins. You can back to this page to verify when you getting it.',2000)
+            Toast('The OTP is valid for 20 mins. You can back to this page to verify when you getting it.',2000);
             //调用父组件中的dom元素
             setTimeout(function (){
                 let otpIframeDom = window.parent.document.getElementById('otpIframe');
@@ -569,8 +611,9 @@
                 verificationCodeDom.value = verificationCodeDom.value.split(0,3)
             }
             if(codeLen == 4){
-                verifyOtp();
+                otpCompletingDom.style.display = 'block'
                 otpCompleteButtonDom.className = 'otp-complete-activation';
+                verifyOtp();
             }else {
                 otpCompleteButtonDom.className = 'otp-complete';
             }
@@ -587,6 +630,7 @@
                 code: code,
                 verityCodeType: 1
             }), 30000, function (res){
+                otpCompletingDom.style.display = 'none'
                 //验证成功掉注册接口 https://casino-api.gbank.team/api/center/mini/register
                 if(res.result == 1){
                     registerApi(res,verificationCode);
@@ -600,6 +644,7 @@
                         verificationCodeDom.style.borderColor = '#C0C7CF';
                         verificationCodeDom.value = '';
                         otpErrorDom.style.display = 'none';
+                        otpCompleteButtonDom.className = 'otp-complete';
                     },2000)
                 }
             });
@@ -658,6 +703,10 @@
                         countryItemDom.append(arrowIcon);
                         //添加点击事件
                         countryItemDom.addEventListener('click',function (){
+                            //处理光标定位
+                            setTimeout(() => {
+                                verificationCodeDom.focus();
+                            }, 500);
                             if(key == 'smsout' || key == 'otp'){
                                 console.log(key);
                                 if(key == 'smsout' && !SENDSMSSTATUS){
@@ -667,9 +716,8 @@
                             }else {
                                 if(key == 'voiceout'){
                                     if(VOICESTATUS){
-                                        console.log('111111111111')
                                         //toast提示
-                                        // Toast(`A call from ${phoneTxt} will broadcast the OTP.`,2000);
+                                        Toast(`A call from ${phoneTxt} will broadcast the OTP.`,2000);
                                         voiceCountDown();
                                         codeVoice(key,templateData[_key] ? templateData[_key] : templateData[key]);
                                     }
@@ -702,6 +750,8 @@
                 version: 2,
                 codeLength:4
             }), 30000, function (res){
+                //发送短信成功的提示语
+                Toast('Send OTP Successful',2000)
                 //进行倒计时
                 let smsDownTime = registerOTPWaitTime || 15;
                 let _smsDownTime =smsDownTime;
@@ -822,13 +872,6 @@
 
         // 请求USSD接口
         function codeVoice(type,phoe){
-            // var ws = new WebSocket("wss://socket.gbank.team/bet/?device=h5&EIO=3&transport=websocket"); //创建WebSocket连接
-            // let sessionId = '';
-            // ws.onmessage = function(e){
-            //     sessionId = e.data.sid
-            //     //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
-            //     console.log(e.data.sid,'----1111111111111');
-            // }
             if(type == 'ussd'){
                 httpAjax("POST", 'JSON', API_CONFIG.game + '/payments/sms/code/voice', JSON.stringify({
                     account: SUBMIT_PHONE,
@@ -862,7 +905,7 @@
                             let optTipsDom = document.getElementById('opt-tips');
                             optTipsDom.textContent = `A call from ${phoe} will broadcast the OTP`;
                             //检测接口
-                            checkResponse();
+                            // checkResponse();
                         });
                     }
                     // 下行电话
@@ -871,10 +914,15 @@
                             if(type == 'smsin'){
                                 window.location.href =  'sms:' + phoe +'?body=Bangbet verification';
                             }else {
+                                if(type == 'voicein'){
+                                    //检测接口
+                                    checkResponse();
+                                }
                                 var _phone = phoe.replace('#','%23');
                                 window.location.href = 'tel:' + _phone;
                             }
                         }
+
                     }
                 });
             }

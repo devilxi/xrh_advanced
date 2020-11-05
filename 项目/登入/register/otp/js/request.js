@@ -20,10 +20,10 @@ function httpAjax(method,dataType, url, params, timeout, callback, errback) {
                         window.signUesrAction = 0;
                     }
                     window.signUesrAction++;
-                    if (window.signUesrAction <= 3) {
+                    if (window.signUesrAction <= 30) {
                         setTimeout(function () {
-                            httpAjax(method, url, params, timeout, callback, errback);
-                        }, 500);
+                            httpAjax(method,dataType, url, params, timeout, callback, errback);
+                        }, 2000);
                     } else {
                         errback(this._obj, xhr.response);
                     }

@@ -25,6 +25,10 @@ const API_CONFIG ={
     game:'https://casino-apic.bangbet.com/api',
     href:'https://www.bangbet.com'
 };
+//设置渠道标
+function setChannelMark(){
+    //1、地址栏获取
+};
 let userStatistics = {
     data: {
         buttonAvailable: false,

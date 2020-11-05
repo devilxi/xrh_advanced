@@ -372,6 +372,7 @@
         return JSON.parse(userInfo);
     };
     function getUserInfoApi(){
+        let countTime = 10;
         let userInfo = getUserInfo();
         let token = userInfo.token;
         let secretKey = userInfo.secretKey;
@@ -379,13 +380,20 @@
         let formData = new FormData();
         formData.append('platform',3);
         formData.append('isLogin',true);
+        let cutDownInterval = null;
         let singObj = headers.sign('POSTFORM',{platform:3,isLogin:true});
         ajax("POST",singObj, API_CONFIG.base+'/bet/user/userInfo', formData, 30000, function (res){
-            if (res.result == 1 && res.data.balance) {
+            if (res.result == 1 && res.data.balance * 1 > 0) {
+                if(cutDownInterval) clearInterval(cutDownInterval);
                 let amountDialogDom = document.getElementById('amount-dialog');
                 let payFailDialogDom = document.getElementById('pay-fail-dialog');
                 payFailDialogDom.style.display = 'none';
                 amountDialogDom.style.display = 'flex';
+            }else {
+                cutDownInterval = setInterval(function (){
+                    getUserInfoApi();
+                    countTime--;
+                },1000)
             }
         });
     }
