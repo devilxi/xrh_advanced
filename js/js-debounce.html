@@ -1,8 +1,30 @@
 <html>
 <div>
-
+    <input id="input-dom"/>
 </div>
 <script>
-
+    window.onload = function (){
+        let inputDom = document.getElementById('input-dom');
+        // inputDom.addEventListener('input',function (e){
+        //     console.log(this.value);
+        // });
+        // debounce(fn,delay)
+        //debounce方法
+        function debounce(fn,delay){
+            let timer;
+            return function (){
+                let context = this;
+                let args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function (){
+                    fn.apply(context,args);
+                },delay)
+            }
+        }
+        //处理抖动效果
+        inputDom.addEventListener('input',debounce(function (){
+            console.log(this.value);
+        },500));
+    };
 </script>
 </html>
