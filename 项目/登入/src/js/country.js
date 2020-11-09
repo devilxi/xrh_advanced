@@ -21,21 +21,23 @@ function  initCountry() {
     }
     //自动光标定位
     phoneInputDom.focus();
-    let country = window.localStorage['country'];
-    if(country == 1){
-        switchCountryIconDom.src = UG_COUNTRY_CONFIG.img;
-        switchCountryNameDom.textContent = UG_COUNTRY_CONFIG.name;
-        phoneLabelDom.textContent = "+" + UG_COUNTRY_CONFIG.areaCode;
-    }else if(country == 2){
-        switchCountryIconDom.src = NG_COUNTRY_CONFIG.img;
-        switchCountryNameDom.textContent = NG_COUNTRY_CONFIG.name;
-        phoneLabelDom.textContent = "+" + NG_COUNTRY_CONFIG.areaCode;
-    }else {
-        switchCountryIconDom.src = KE_COUNTRY_CONFIG.img;
-        switchCountryNameDom.textContent = KE_COUNTRY_CONFIG.name;
-        phoneLabelDom.textContent = "+" + KE_COUNTRY_CONFIG.areaCode;
-    }
-    processingCountry();
+    getCountryInfo(function (country){
+        //处理下当前国家
+        if(country == 'ug'){
+            switchCountryIconDom.src = UG_COUNTRY_CONFIG.img;
+            switchCountryNameDom.textContent = UG_COUNTRY_CONFIG.name;
+            phoneLabelDom.textContent = "+" + UG_COUNTRY_CONFIG.areaCode;
+        }else if(country == 'ng'){
+            switchCountryIconDom.src = NG_COUNTRY_CONFIG.img;
+            switchCountryNameDom.textContent = NG_COUNTRY_CONFIG.name;
+            phoneLabelDom.textContent = "+" + NG_COUNTRY_CONFIG.areaCode;
+        }else {
+            switchCountryIconDom.src = KE_COUNTRY_CONFIG.img;
+            switchCountryNameDom.textContent = KE_COUNTRY_CONFIG.name;
+            phoneLabelDom.textContent = "+" + KE_COUNTRY_CONFIG.areaCode;
+        }
+        processingCountry();
+    });
 };
 //处理选择国家的DOM
 function processingCountry(){
@@ -79,6 +81,54 @@ function processingCountry(){
         countryDialogDom.style.display = 'none';
     })
 };
-
+//获取国家信息
+function getCountryInfo(callback){
+    //1、先从缓存中取数据 2、如果缓存不存在再从接口中取数据
+    //https://bet-apic.bangbet.com/api/bet/country
+    let country = 'ke';
+    let localStorageCountry = window.localStorage['country'];
+    if(!localStorageCountry){
+        request("Get",'JSON','https://bet-apic.bangbet.com/api/bet/country', {}, 30000, function (res){
+            //更新下缓存数据
+            let countryNumber = 0;
+            if(res.country){
+                country = res.country.toLocaleLowerCase();
+            };
+            switch (country) {
+                case "ke":
+                    countryNumber = 0;
+                    break
+                case 'ng':
+                    countryNumber = 2;
+                    break
+                case 'ug':
+                    countryNumber = 1;
+                    break
+                default:
+                    countryNumber = 0;
+                    break
+            }
+            localStorage.setItem('country',countryNumber);
+            callback(country);
+        });
+    }else{
+        let localStorageCountryStr = localStorageCountry.toString();
+        switch (localStorageCountryStr){
+            case '0' :
+                country = 'ke';
+                break;
+            case '1' :
+                country = 'ug';
+                break;
+            case '2' :
+                country = 'ng';
+                break;
+            default:
+                country = 'ke';
+                break;
+        };
+        callback(country);
+    }
+}
 
 export default initCountry;
