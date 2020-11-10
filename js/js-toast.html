@@ -1,0 +1,53 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .toast{
+            max-width:80%;
+            min-width: 1.5rem;
+            padding:0.2rem 0.14rem;
+            color: rgb(255, 255, 255);
+            text-align: center;
+            border-radius: 0.4rem;
+            position: fixed;top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999999;
+            background: rgba(0, 0, 0,.7);
+            font-size: 0.24rem;
+        }
+    </style>
+</head>
+<bdoy>
+    <div>
+        <button id="button-toast">Toast</button>
+    </div>
+</bdoy>
+<script>
+    function Toast(msg,duration){
+        //1、判断是否上一次创建的元素还在【防止重复生成DOM元素】
+        let toastDivBox = document.getElementById('toast-div');
+        if(toastDivBox) return ;
+        //2、对时间进行处理
+        duration=isNaN(duration)?3000:duration;
+        //创建一个DOM节点
+        let toastDOM = document.createElement('div');
+        toastDOM.innerHTML = msg;
+        toastDOM.style.cssText="";
+        toastDOM.className = 'toast';
+        toastDOM.id = 'toast-div';
+        document.body.appendChild(toastDOM);
+        //设置延迟销毁DOM节点
+        setTimeout(function() {
+            let toastDivBox = document.getElementById('toast-div');
+            if(toastDivBox) toastDivBox.remove();
+        }, duration);
+    }
+    window.onload = function (){
+        let buttonToastDom = document.getElementById('button-toast');
+        buttonToastDom.addEventListener('click',function (){
+            Toast('这是一个Toast',2000);
+        });
+    };
+</script>
+</html>
