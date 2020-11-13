@@ -225,6 +225,12 @@ let userStatistics = {
                 request("POST",'POSTJSON', API_CONFIG.base + '/bet/user/checkUserIsExist', params, 30000, function (res){
                     //判断用户是否已经注册
                     if(res.result === 1){
+                        let viewParams = new FormData();
+                        viewParams.append('username',phone);
+                        viewParams.append('event','RegisterPage');
+                        //数据进行上报
+                        request("POST",'POSTJSON', API_CONFIG.base + '/bet/view/event',viewParams, 30000, function (res){
+                        });
                         otpIframeDomSrc.src = './otp/index.html?phone=' + originalPhone + '&country=' + that.getCountry();
                         //打开验证码的弹窗
                         otpIframeDom.style.display = 'block';
