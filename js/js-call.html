@@ -1,0 +1,19 @@
+<html>
+<div></div>
+<script>
+    var name = '小王',age=17;
+    var obj = {
+        name:'123',
+        objAge:this.age,
+        myFun:function (){
+            console.log(this.name,this.objAge);
+        }
+    }
+    var db = {
+        name:'456',
+        age:18
+    }
+    obj.myFun();
+    obj.myFun.call(db);
+</script>
+</html>

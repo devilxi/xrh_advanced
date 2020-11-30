@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>then方法的使用</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div></div>
+</body>
+<script>
+    function ajax(){
+        let result = new Promise(function(resolve,reject){
+            setTimeout(()=>{
+                console.log('123');
+                resolve();
+            },3000)
+        });
+        return result;
+    }
+    function set(){
+        ajax().then(function (){
+            console.log('456')
+        });
+    }
+    set();
+</script>
+</html>

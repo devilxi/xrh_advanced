@@ -1,6 +1,3 @@
-import  "../css/base.css";
-import "../css/index.scss";
-import "../assets/icon/iconfont.css"
 import "./main"
 import request from "../request/index"
 import initCountry from "./country"
@@ -134,6 +131,11 @@ let userStatistics = {
         let tipsUssdKeDom = document.getElementById('tips-ussd-ke');
         let tipsUssdNgDom = document.getElementById('tips-ussd-ng');
         let tipsUssdUgDom = document.getElementById('tips-ussd-ug');
+        let alreadyLoginDom = document.getElementById('already-login');
+        alreadyLoginDom.addEventListener('click',function (){
+            window.top.localStorage.setItem('isComing',JSON.stringify(1));
+            window.top.location.href =  window.location.origin + '/login';
+        });
         //添加监听事件
         switchCountryDom.addEventListener('click',function (e){
             let countryCode =  window.localStorage.getItem('country');
@@ -167,7 +169,8 @@ let userStatistics = {
         });
         closeKeepDom.addEventListener('click',function (){
             keepDialogDom.style.display= 'none';
-            window.location.href = API_CONFIG.href;
+            //跳转首页
+            window.location.href =  window.location.origin;
         });
         keepContinueDom.addEventListener('click',function (){
             keepDialogDom.style.display= 'none';
