@@ -1,0 +1,51 @@
+<html>
+<script>
+    function debounce(fn,delay){
+        let timer;
+        return function (){
+            let context = this;
+            let args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function (){
+                fn.apply(context,args);
+            },delay)
+        }
+    }
+    function deBounce(fn,delay){
+        let timer;
+        return function (){
+            let context = this;
+            let args = arguments;
+            if(timer) clearInterval(timer);
+            timer = setTimeout(function (){
+                fn.apply(context,args);
+            },delay)
+        }
+    }
+    //防抖方法
+    function debounce(fn,delay){
+        let timer;
+        return function (){
+            let context = this;
+            let args =arguments;
+            setTimeout(function (){
+                fn.apply(context,args)
+            },delay)
+        }
+    }
+    //节流方法
+    function throttle(fn,delay){
+        let flag = true;
+        return function (){
+            if(!flag) return;
+            flag = false;
+            let context = this;
+            let args =arguments;
+            setTimeout(function (){
+                fn.apply(context,args);
+                flag =true;
+            },delay)
+        }
+    }
+</script>
+</html>

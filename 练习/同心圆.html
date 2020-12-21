@@ -1,0 +1,42 @@
+<html>
+<style>
+    .div{
+        height: 300px;
+        width: 300px;
+        border-radius: 50%;
+        margin: 100px auto;
+        box-shadow: 0 0 0 10px red, 0 0 0 20px black, 0 0 0 30px red, 0 0 0 40px black,0 0 0 50px red;
+        /*background: repeating-radial-gradient(circle, rgb(255, 255, 255) 5%, rgb(0, 0, 0) 10%);*/
+    }
+
+    #d3{
+        background-color: #ff5000;
+        width: 150px;
+        height: 150px;
+        margin: 30px;
+        border-radius: 50%;
+        position: relative;
+        box-shadow: 0 0 0 30px rgba(255,80,0,.2);
+    }
+
+    #d3::before {
+        content: '';
+        width: 100px;
+        height: 100px;
+        background-color: #fff;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        border-radius: 50%;
+    }
+</style>
+<body>
+<div class="div">
+</div>
+<div id="d3">
+</div>
+
+
+</body>
+</html>
