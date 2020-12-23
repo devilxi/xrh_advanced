@@ -1,0 +1,18 @@
+<html>
+<script>
+    function sort(ary){
+        if(ary.length <=1){
+            return ary;
+        }
+        for (var i = 0 ; i <ary.length-1;i++){
+            for (var j = 0; j<ary.length-i-1;j++){
+                if(arry[j]>ary[j+1]){
+                    var temp = arry[j];
+                    arry[j] = arry[j+1];
+                    arry[j+1] = temp;
+                }
+            }
+        }
+    }
+</script>
+</html>

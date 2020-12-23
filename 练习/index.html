@@ -1,0 +1,72 @@
+<html>
+<script>
+    console.log({} instanceof Object)
+    var _$test$2
+    console.log(isNaN('XXX'));
+    var url = "https://www.nowcoder.com/discuss/v2/post?aaa=1&bbb=2&ccc&3#hash";
+    function getUrl(url){
+        var obj = {}
+        if(url){
+            var urls = url.split('?');
+            if(Array.isArray(urls) && urls.length>1){
+                var pams = urls[1].split('&');
+                for (var i = 0 ;i<pams.length;i++){
+                    var xxx = pams[i].split('=');
+                    if(Array.isArray(xxx) && xxx.length>1){
+                        obj[xxx[0]] = xxx[1];
+                    }
+                }
+            }
+        }
+        return obj;
+    }
+    console.log(getUrl(url));
+
+
+    function foo(){
+        console.log(a)
+    }
+    function bar(){
+        var a = 3;
+        foo();
+    }
+    var a  = 2;
+    bar();
+
+
+    setTimeout(function (){
+        console.log(100);
+    },10)
+    console.log(200);
+    Promise.resolve().then(function (){
+        console.log(300)
+    })
+
+    setTimeout(function (){
+        console.log(10000);
+    },0)
+    console.log(20000);
+    Promise.resolve().then(function (){
+        console.log(30000)
+    })
+
+
+
+</script>
+
+
+1、标准和模型和IE模型
+1、盒模型分为：标准盒模型和IE盒模型
+2、区别
+标准盒模型：  width+padding-left+padding-right+border-left+border-right+margin-left+margin-right
+IE盒模型：
+3、box-sizing content-box  border-box
+
+
+
+2、选择器： 标签选择器 类选择器 id选择器 子选择器 包含选择器 兄弟选择器 相邻选择器 全局选择器 群选择器 属性选择器 伪类选择器
+
+3、伪类和伪元素的区别，讲讲伪类有哪些
+
+
+</html>
