@@ -1,0 +1,48 @@
+<html>
+<!--将函数设为对象的属性-->
+<!--执行删除这个函数-->
+<!--指定this到函数并传入给定参数执行函数-->
+<!--如果不穿参数，默认指向为window-->
+<script>
+    function myCall(context){
+        context.fn = this;
+        let args = [];
+        for (var i = 0 ;i<arguments.length;i++){
+            args.push(arguments[i]);
+        }
+        context.fn(...args);
+        let result = context.fn(...args);
+        delete context.fn;
+        return result;
+    }
+    console.log('1');
+    setTimeout(function() {
+        console.log('2');
+        new Promise(function(resolve) {
+            console.log('4');
+            resolve();
+        }).then(function() {
+            console.log('5')
+        })
+    })
+
+    new Promise(function(resolve) {
+        console.log('7');
+        resolve();
+    }).then(function() {
+        console.log('8')
+    })
+
+    setTimeout(function() {
+        console.log('9');
+        new Promise(function(resolve) {
+            console.log('11');
+            resolve();
+
+        }).then(function() {
+            console.log('12')
+        })
+
+    })
+</script>
+</html>

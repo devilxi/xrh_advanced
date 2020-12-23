@@ -1,0 +1,31 @@
+<html>
+<script>
+    var ary = [1,5,7,8,12,43,2,90,54,3,6,100];
+    ary.sort((a,b)=>{
+        return a-b;
+    });
+    function search(ary,num){
+        if(ary.length == 0){
+            console.log(false);
+            return false
+        }
+        var len = ary.length;
+        var midle = parseInt(len / 2);
+        var val = ary[midle];
+        if(num == val){
+            console.log(true);
+            return true;
+        }
+        else {
+            var temp = [];
+            if(num>val){
+                temp = ary.splice(midle+1,len-1);
+            }else {
+                temp = ary.splice(0,midle-1);
+            }
+            search(temp,num)
+        }
+    }
+    search(ary,1);
+</script>
+</html>

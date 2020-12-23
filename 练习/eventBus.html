@@ -1,0 +1,52 @@
+<html>
+<meta charset="UTF-8">
+<script>
+    class EventEmit {
+        constructor() {
+            this.event = {};
+            this.maxListerners = 10;
+        }
+        // 监听
+        on(type, listener) {
+            if (this.event[type]) {
+                if (this.event[type].length >= this.maxListerners) {
+                    console.error('同一个监听器最多被十个对象监听,否则可能造成内存泄漏.\n');
+                    return;
+                }
+                this.event[type].push(listener);
+            } else {
+                this.event[type] = [listener];
+            }
+        }
+        //发送监听
+        emit(type, ...rest) {
+            if (this.event[type]) {
+                this.event[type].map(fn => fn.apply(this, rest));
+            }
+        }
+        //移除监听器
+        removeListener(type) {
+            if (this.event[type]) {
+                delete this.event[type];
+                console.log(this.event);
+            }
+        }
+        //移除所有的监听器
+        removeAllListener() {
+            this.event = {};
+        }
+    }
+
+
+    let DeviceEventEmit = new EventEmit();
+    DeviceEventEmit.on('event', (item) => {
+        console.log('DeviceEventEmit', item);
+    });
+    DeviceEventEmit.on('my-event', (item) => {
+        console.log('DeviceEventEmit', item);
+    });
+    DeviceEventEmit.emit('event', '测试123');
+    DeviceEventEmit.emit('event', '测试456');
+    // DeviceEventEmit.removeListener('event');
+</script>
+</html>
