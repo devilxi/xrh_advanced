@@ -1,0 +1,58 @@
+<html>
+<style>
+    .div1{
+        background-color: red;
+    }
+    .div2{
+        margin: 10px;
+        height: 30px;
+    }
+    .div3{
+        margin: 10px;
+        height: 30px;
+    }
+</style>
+<div class="div1">
+    <div class="div2"></div>
+    <div class="div3"></div>
+</div>
+<script>
+    {
+        //寻找异常数字-JavaScript
+        function findStrangeNum(numbers){
+            if(!numbers || !Array.isArray(numbers)) return false;
+            let numbers_sort = numbers.sort();
+            for (let i = 0; i < numbers_sort.length; i++){
+                if(numbers_sort[i+1] - numbers_sort[i] != 1){
+                    return  numbers_sort[i];
+                }
+            }
+        }
+        //测试代码
+        console.log(findStrangeNum([1,3,2,3])); //3
+        console.log(findStrangeNum([1,3,2,1])); //1
+        console.log(findStrangeNum([1,3,2,4])); //4
+        console.log(findStrangeNum([1,3,2,0])); //3
+        console.log(findStrangeNum([1,3,2,-1])); //-1
+        console.log(findStrangeNum([1,3,2,3,4,5,6])); //3
+    }
+    {
+        //冒泡排序-JavaScript
+        function bubbleSort(numbers){
+            if(!numbers || !Array.isArray(numbers)) return numbers;
+            let len = numbers.length;
+            for (let i = 0 ; i < len-1; i++){
+                for (let j = 0; j < len-i-1; j++){
+                    if(numbers[j] > numbers[j+1]){
+                        [numbers[j],numbers[j+1]] = [numbers[j+1],numbers[j]];
+                    }
+                }
+            }
+            return numbers;
+        }
+        //测试代码
+        let numbers = [9,1,5,-3,10,2,3,5,7,8,0];
+        console.log(bubbleSort(numbers));
+    }
+</script>
+</html>

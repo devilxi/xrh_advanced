@@ -4,15 +4,17 @@
         if(ary.length <=1){
             return ary;
         }
-        for (var i = 0 ; i <ary.length-1;i++){
-            for (var j = 0; j<ary.length-i-1;j++){
-                if(arry[j]>ary[j+1]){
-                    var temp = arry[j];
-                    arry[j] = arry[j+1];
-                    arry[j+1] = temp;
+        var len = ary.length;
+        for (var i = 0 ; i <len-1;i++){
+            for (var j = 0; j<len-i-1;j++){
+                if(ary[j]>ary[j+1]){
+                    [ary[j],ary[j+1]] = [ary[j+1],ary[j]];
                 }
             }
         }
+        return ary;
     }
+    var ary = [1,5,7,8,12,43,2,90,54,3,6,100];
+    console.log(sort(ary));
 </script>
 </html>

@@ -1,0 +1,32 @@
+<html>
+<body>
+<div>
+    <a href="https://www.baidu.com/" onClick="return true;">baidu</a>
+</div>
+<script>
+    function clickBtn(){
+        alert(123);
+        console.log('123456');
+    };
+    let obj = {
+        name: 'nike',
+        age: 18,
+        sex: 1,
+    }
+    for (let key in obj){
+        if(obj.hasOwnProperty(key)){
+            console.log(`${key} = ${obj[key]}`);
+        }
+    }
+    Object.keys(obj).forEach((key)=>{
+        console.log(`${key} = ${obj[key]}`);
+    });
+
+
+    let ary = [11, 22, 33];
+    for (let key in ary){
+        console.log(`${key} = ${ary[key]}`);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<html>
+<meta charset="UTF-8">
+<script>
+    //1、直接调用
+    var name = '小明';
+    function foo(){
+        "use strict";
+        return this.name;
+    }
+    console.log(window.foo()); // true
+    //2、对象方法中的this
+    var obj = {
+        prop: 37,
+        foo: function() {
+            return this.prop;
+        }
+    };
+    console.log(obj.foo()); // 3
+
+
+    //1、直接调用
+    //2、对象方法中的this
+    //3、原型链中的this
+    //4、getter与setter中的this
+    //5、构造函数中的this
+    //6、call和apply中的this
+    //7、bind()方法
+    //8、DOM事件处理函数中的this
+    //9、内联事件处理函数中的this
+
+
+    //第一道题
+    var name = "caibaojian.com";
+    var person = {
+        name: "kang",
+        pro: {
+            name: "Michael",
+            getName: function() {
+                return this.name;
+            }
+        }
+    };
+    console.log(person.pro.getName()); // Michael
+    var pepole = person.pro.getName;
+    console.log(pepole()); // caibaojian.com
+
+    //第二道题
+    var name = "caibaojian.com";
+    var person = {
+        name: "kang",
+        pro: {
+            name: "Michael",
+            getName: function() {
+                console.log(this);
+                return this.name;
+            }
+        }
+    };
+    console.log(person.pro.getName()); // Object { name: "...", getName: () }, Michael
+    var pepole = person.pro.getName;
+    console.log(pepole()); // Window, caibaojian.com
+
+    //第三道题
+    {
+        'use strict';
+        var name = "caibaojian.com";
+        var person = {
+            name: "kang",
+            pro: {
+                name: "Michael",
+                getName: function() {
+                    console.log(this);
+                    return this.name;
+                }
+            }
+        };
+        console.log(person.pro.getName()); // Object { name: "...", getName: () }, Michael
+        var pepole = person.pro.getName;
+        console.log(window.pepole()); // undefined
+    }
+    {
+        var name = "caibaojian.com",
+            person = {
+                name : "kang",
+                getName : function(){
+                    return function(){
+                        return this.name;
+                    };
+                }
+            };
+
+        console.log(person.getcName()()); // caibaojian.com
+    }
+
+</script>
+</html>

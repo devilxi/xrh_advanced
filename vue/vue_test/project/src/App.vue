@@ -12,6 +12,7 @@ export default {
   components: {
     // HelloWorld,
     test
+
   }
 }
 </script>

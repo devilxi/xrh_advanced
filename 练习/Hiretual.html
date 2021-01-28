@@ -1,0 +1,62 @@
+<html>
+
+<script>
+    // var funcs = [];
+    // for (let  i = 0; i < 3; i++) {
+    //     funcs[i] = (function(i) {
+    //         return function (){
+    //             console.log("My value: " + i);
+    //         }
+    //     })(i);
+    // }
+    // for (var j = 0; j < 3; j++) {
+    //     funcs[j]();
+    // }
+
+</script>
+<script>
+    // var Quo = function(str){
+    //     this.status = str;
+    // }
+    // Quo.prototype.get_status = function(){
+    //     return this.status;
+    // }
+</script>
+<script>
+    // for (var i = 0; i < 3; i++){
+    //     setTimeout((
+    //         function (i){
+    //             return function (){
+    //                 console.log(i);
+    //             }
+    //         }
+    //     )(i),0);
+    // }
+    // for (var i=1; i<=5; i++) {
+    //     setTimeout( (function(i) {
+    //         return function() {
+    //             console.log(i);
+    //         }
+    //     })(i), 0);
+    // }
+</script>
+
+
+<script>
+    async function setTime(){
+        await asy();
+        console.log(2);
+    }
+    setTime();
+    function asy(){
+        setTimeout(function (){
+            console.log(1);
+        },0);
+    }
+    console.log(3);
+</script>
+
+
+
+
+</html>

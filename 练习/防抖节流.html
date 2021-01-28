@@ -1,6 +1,19 @@
 <html>
 <script>
     function debounce(fn,delay){
+        let timer = null;
+        return (...args)=>{
+            if(timer){
+                clearTimeout(timer)
+            };
+            timer = setTimeout(()=>{
+                fn.apply(this,args);
+            },delay);
+        };
+    }
+
+
+    function debounce(fn,delay){
         let timer;
         return function (){
             let context = this;
@@ -47,5 +60,26 @@
             },delay)
         }
     }
+
+    function throttle(fn,delay){
+        let flag = true;
+        return (...args)=>{
+            if(!flag) return;
+            flag = false;
+            setTimeout(()=>{
+                fn.apply(this,args);
+                flag = true;
+            },delay)
+        };
+    }
+    function debounce(fn,delay){
+        let timer;
+        return (...arg)=>{
+            if(timer) clearTimeout(timer);
+            timer = setTimeout(()=>{
+                fn.apply(this,arg);
+            },delay);
+        };
+    };
 </script>
 </html>

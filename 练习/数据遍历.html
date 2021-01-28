@@ -1,0 +1,34 @@
+<html>
+<script>
+    let initArr = [2, 3, 4, 3, 6, 7, 8, 1, 0, -2, -5];
+
+    //1、filter
+    let numArr = initArr.filter(function (val){
+        return val > 0;
+    });
+    console.log('filter==========>', numArr);
+
+    //2、map
+    let cArr = initArr.map(function (val){
+        return val*10
+    });
+    console.log('map==========>', cArr);
+
+    //3、reduce
+    let sumArr = initArr.reduce(function (previousValue, currentValue, index, array){
+        console.log(index, array);
+        return previousValue + currentValue;
+    },100);
+    console.log('reduce========>',sumArr)
+
+    script start
+    async start
+    async2
+    async end
+    promise1
+    script end
+    promise2
+    setTimeout
+
+</script>
+</html>

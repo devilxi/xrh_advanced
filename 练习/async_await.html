@@ -1,0 +1,158 @@
+<html>
+<meta charset="UTF-8">
+
+<!--<script>-->
+<!--    //async返回一个promise对象-->
+<!--    async function timeout(){-->
+<!--        return 'hello word';-->
+<!--    }-->
+<!--    timeout().then(result =>{-->
+<!--        console.log(result);-->
+<!--    });-->
+<!--    function double(num){-->
+<!--        // return new Promise(function (resolve,reject){-->
+<!--        //     console.log(22);-->
+<!--        //     setTimeout(()=>{-->
+<!--        //         console.log(33);-->
+<!--        //         resolve(num*2);-->
+<!--        //     },100)-->
+<!--        // });-->
+<!--        console.log(22);-->
+<!--        setTimeout(()=>{-->
+<!--            console.log(33);-->
+<!--        },100)-->
+<!--    }-->
+<!--    async function testResult(){-->
+<!--        let result = await double(3);-->
+<!--        console.log(result);-->
+<!--        console.log(2);-->
+<!--    };-->
+<!--    testResult();-->
+<!--    console.log('先执行');-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    async function getSomething() {-->
+<!--        setTimeout(function (){-->
+<!--            return "something";-->
+<!--        },0)-->
+<!--        return '2222222222222'-->
+<!--    }-->
+<!--    async function testAsync() {-->
+<!--        return new Promise(function (resolve){-->
+<!--          setTimeout(function (){-->
+<!--              resolve("hello async")-->
+<!--          },1000);-->
+<!--        });-->
+<!--    }-->
+<!--    async function test() {-->
+<!--        console.log(getSomething());-->
+<!--        const v1 = await getSomething();-->
+<!--        const v2 = await testAsync();-->
+<!--        console.log(v1, v2);-->
+<!--    }-->
+<!--    test();-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    async function async1 () {-->
+<!--        console.log('async1 start')-->
+<!--        await async2();-->
+<!--        console.log('async1 end')-->
+<!--    }-->
+<!--    async function async2 () {-->
+<!--      console.log('async2')-->
+<!--    }-->
+<!--    //第一个输出-->
+<!--    console.log('script start')-->
+<!--    setTimeout(function () {-->
+<!--      console.log('setTimeout')  -->
+<!--    }, 0)-->
+<!--    // console.log(async1());-->
+<!--    async1()-->
+<!--    new Promise(function (resolve) {-->
+<!--      console.log('promise1')-->
+<!--      resolve()-->
+<!--    }).then(function () {-->
+<!--      console.log('promise2')-->
+<!--    })-->
+<!--    console.log('script end')-->
+
+<!--    setTimeout(function (){-->
+<!--        console.log('script start async1 start async2 promise1 script end async1 end promise2 setTimeout');-->
+<!--    },100)-->
+
+<!--</script>-->
+<!--<script>-->
+<!--    console.log('1')-->
+<!--    async function async1() {-->
+<!--        console.log('2')-->
+<!--        await setTimeout(() => {-->
+<!--            console.log('3')-->
+<!--        }, 0)-->
+<!--        console.log('4')-->
+<!--    }-->
+<!--    setTimeout(() => {-->
+<!--        console.log('5')-->
+<!--    }, 0)-->
+<!--    async1()-->
+<!--    new Promise(function (resolve) {-->
+<!--        console.log('6')-->
+<!--        resolve()-->
+<!--    }).then(function () {-->
+<!--        console.log('7')-->
+<!--    })-->
+<!--    console.log('8')-->
+<!--    setTimeout(function (){-->
+<!--        console.log('1 2 6 8 4 7 3 5');-->
+<!--    },100)-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    async function anc(num){-->
+<!--        if(num > 0){-->
+<!--            await setTimeout(function (){-->
+<!--                num = 1;-->
+<!--                console.log(num);-->
+<!--            },1000);-->
+<!--            return num;-->
+<!--        }else {-->
+<!--            return false;-->
+<!--        }-->
+<!--    }-->
+<!--    let result = anc(10);-->
+<!--    console.log(result);-->
+<!--</script>-->
+
+
+<script>
+    console.log('script start')
+    async function async1() {
+        await async2()
+        console.log('async1 end')
+    }
+    async function async2() {
+        console.log('async2 end')
+    }
+    async1();
+    setTimeout(function() {
+        console.log('setTimeout')
+    }, 0)
+    new Promise(resolve => {
+        console.log('Promise')
+        resolve()
+    }).then(function() {
+        console.log('promise1')
+    }).then(function() {
+        console.log('promise2')
+    })
+    console.log('script end')
+
+</script>
+<script>
+
+
+</script>
+
+
+</html>

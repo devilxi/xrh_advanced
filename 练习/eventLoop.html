@@ -11,7 +11,19 @@ nextTick
 任务的优先级： nextTick > promise.then > setTimeout
 
 <!--事件循环-->
+<script>
+    console.log(1);
+    setTimeout(function (){
+        console.log(2);
+    },0);
+    new Promise(function (resolve){
+        console.log(3);
+        resolve();
+    }).then(function (){
+        console.log(4);
+    });
 
+</script>
 
 
 </html>
