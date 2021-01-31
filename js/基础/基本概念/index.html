@@ -1,1 +1,10 @@
-132
+<html>
+<script type="text/javascript">
+    var newEvent = new Event('build', { bubbles:true,cancelable:true,composed:true });
+    newEvent.name = "新的事件！";
+    document.addEventListener("build",function(){
+        alert("你触发了自定义事件！" + newEvent.name);
+    },false)
+    document.dispatchEvent(newEvent);
+</script>
+</html>
