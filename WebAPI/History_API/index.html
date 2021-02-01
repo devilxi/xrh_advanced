@@ -6,8 +6,92 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>History_API</title>
+    <style>
+        .history-api{
+            display: flex;
+            flex-direction:row;
+        }
+        .btn{
+            height: 40px;
+            width: 120px;
+            background: #9CA0AB;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 30px;
+        }
+        .history-panel{
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+        }
+        .input{
+            height: 30px;
+            width: 200px;
+        }
+        #add{
+            margin-left: 10px;
+            width: 50px;
+            height: 35px;
+            border-radius: 5px;
+            background: #9CA0AB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
+<div class="history-api">
+    <div id="back" class="btn">后退</div>
+    <div id="forward" class="btn">前进</div>
+</div>
+<div class="history-panel">
+    <input class="input" id="input"/>
+    <div id="add">Add</div>
+</div>
 
 </body>
+<script>
+    window.onload = function (){
+        console.log(history.state);
+        let backDom = document.getElementById('back');
+        let forwardDom = document.getElementById('forward');
+        let addDom = document.getElementById('add');
+        if(backDom){
+            backDom.addEventListener('click',function (){
+                console.log(1);
+                window.history.back();
+                // window.history.go(-1);
+            })
+        }
+        if(forwardDom){
+            forwardDom.addEventListener('click',function (){
+                console.log(2);
+                window.history.forward();
+                // window.history.go(1);
+            })
+        }
+        //pushState 三个参数： 状态对象 标题 URL
+        // 状态对象 — 状态对象state是一个JavaScript对象，通过pushState () 创建新的历史记录条目。 640k
+        // 无论什么时候用户导航到新的状态，popstate事件就会被触发，且该事件的state属性包含该历史记录条目状态对象的副本。
+        // URL — 该参数定义了新的历史URL记录
+        window.history.pushState({},'','');
+        if(addDom){
+            let stateObj = {
+                foo: "bar",
+            };
+            addDom.addEventListener('click',function (){
+                // window.history.pushState(stateObj, "page 2", "bar.html");
+                let inputTxt = document.getElementById('input').value;
+                if(inputTxt){
+                    window.history.replaceState(stateObj, "page 3", inputTxt);
+                }
+                let numberOfEntries = window.history.length;
+                console.log(window.history);
+            });
+        }
+    }
+</script>
 </html>
